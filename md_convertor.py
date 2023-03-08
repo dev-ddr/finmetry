@@ -17,15 +17,25 @@ import os
 ### this is required for adjusting the links to images in converted .md file.
 repo_name = 'finmetry'
 
-# this is the folder where .ipynb file is located
+### this is the folder where .ipynb file is located
 parent_folder = os.getcwd()
+### add / in path instead of // or \. Because this string will be used in generating link to image file.
 subfolder = r'Projects/Project1'
 parent_folder = os.path.join(parent_folder,subfolder)
+# subfolder = None
 input_filename = 'plot1.ipynb'
 output_filename = 'README.md'
 
+
+####################################################################################################################################
+### Most of the code below does not require user attention.
+
+
 ### this is the string to be appended on link of generated images
-img_link1 = r'/blob/base/' + subfolder + r'/README_files/'
+if subfolder is None:
+    img_link1 = r'/blob/base/README_files/'
+else:
+    img_link1 = r'/blob/base/' + subfolder + r'/README_files/'
 
 ### read the raw data
 fp1 = os.path.join(parent_folder,input_filename)
