@@ -31,7 +31,7 @@ plt.show()
 
 
     
-![png](https://github.com/ddrathod121294/finmetry/blob/base/README_files/output_3_0.png?raw=true)
+![png](https://github.com/ddrathod121294/finmetry/blob/base/Projects/Project1/README_files/output_3_0.png?raw=true)
     
 
 

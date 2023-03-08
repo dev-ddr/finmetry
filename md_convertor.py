@@ -18,10 +18,14 @@ import os
 repo_name = 'finmetry'
 
 # this is the folder where .ipynb file is located
-parent_folder = r'.'
-parent_folder = os.path.join(os.getcwd(),r'Projects\Project1')
+parent_folder = os.getcwd()
+subfolder = r'Projects/Project1'
+parent_folder = os.path.join(parent_folder,subfolder)
 input_filename = 'plot1.ipynb'
 output_filename = 'README.md'
+
+### this is the string to be appended on link of generated images
+img_link1 = r'/blob/base/' + subfolder + r'/README_files/'
 
 ### read the raw data
 fp1 = os.path.join(parent_folder,input_filename)
@@ -87,7 +91,7 @@ for m in re.finditer(r"!\[png\]",body):
 # replace the found strings
 for str1,iname1 in zip(l_str,l_img_name):
     i1 = body.find(str1)
-    rstr1 = r'![png](https://github.com/ddrathod121294/' + repo_name + '/blob/base/README_files/' + iname1 +'?raw=true'
+    rstr1 = r'![png](https://github.com/ddrathod121294/' + repo_name + img_link1 + iname1 +'?raw=true'
     body = body.replace(str1,rstr1)
     
 # now we will write the body in README.md file
