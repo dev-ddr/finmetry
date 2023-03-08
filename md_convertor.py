@@ -14,12 +14,17 @@ from traitlets.config import Config
 from nbconvert import HTMLExporter, MarkdownExporter
 import os
 
+### this is required for adjusting the links to images in converted .md file.
+repo_name = 'finmetry'
+
+# this is the folder where .ipynb file is located
 parent_folder = r'.'
-module_name = 'finmetry'
+parent_folder = os.path.join(os.getcwd(),r'Projects\Project1')
+input_filename = 'plot1.ipynb'
+output_filename = 'README.md'
 
-
-# read the raw data
-fp1 = os.path.join(parent_folder,'Readme.ipynb')
+### read the raw data
+fp1 = os.path.join(parent_folder,input_filename)
 with open(fp1) as f1:
     l1 = f1.readlines()
     
@@ -82,11 +87,11 @@ for m in re.finditer(r"!\[png\]",body):
 # replace the found strings
 for str1,iname1 in zip(l_str,l_img_name):
     i1 = body.find(str1)
-    rstr1 = r'![png](https://github.com/ddrathod121294/' + module_name + '/blob/base/README_files/' + iname1 +'?raw=true'
+    rstr1 = r'![png](https://github.com/ddrathod121294/' + repo_name + '/blob/base/README_files/' + iname1 +'?raw=true'
     body = body.replace(str1,rstr1)
     
 # now we will write the body in README.md file
-fp1 = os.path.join(parent_folder,'README.md')
+fp1 = os.path.join(parent_folder,output_filename)
 with open(fp1,'w') as f1:
     f1.write(body)
     
