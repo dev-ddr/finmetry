@@ -15,7 +15,7 @@ from nbconvert import HTMLExporter, MarkdownExporter
 import os
 
 parent_folder = r'.'
-module_name = 'ddr_mfc'
+module_name = 'finmetry'
 
 
 # read the raw data
