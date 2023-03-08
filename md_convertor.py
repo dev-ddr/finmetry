@@ -16,6 +16,7 @@ import os
 
 ### this is required for adjusting the links to images in converted .md file.
 repo_name = 'finmetry'
+github_username = 'dev-ddr'
 
 ### this is the folder where .ipynb file is located
 parent_folder = os.getcwd()
@@ -101,7 +102,7 @@ for m in re.finditer(r"!\[png\]",body):
 # replace the found strings
 for str1,iname1 in zip(l_str,l_img_name):
     i1 = body.find(str1)
-    rstr1 = r'![png](https://github.com/ddrathod121294/' + repo_name + img_link1 + iname1 +'?raw=true'
+    rstr1 = r'![png](https://github.com/'+ github_username + r'/' + repo_name + img_link1 + iname1 +'?raw=true'
     body = body.replace(str1,rstr1)
     
 # now we will write the body in README.md file
