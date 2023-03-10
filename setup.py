@@ -13,7 +13,8 @@ with open('README.md') as readme_file:
 
 requirements = [
     "numpy",
-    "pandas"
+    "pandas",
+    "yfinance"
 ]
 
 setup_requirements = []
@@ -24,7 +25,7 @@ setup(
     name='finmetry',
     version=version,
     packages=find_packages(where="src"),  # Required
-    url="https://github.com/ddrathod121294/finmetry",
+    url="https://github.com/dev-ddr/finmetry",
     description="Stock market data analysis", # Optional
     keywords='stock market, market, finanace, investment', # Optional
 

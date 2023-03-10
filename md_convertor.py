@@ -20,11 +20,11 @@ github_username = 'dev-ddr'
 
 ### this is the folder where .ipynb file is located
 parent_folder = os.getcwd()
+subfolder = None
 ### add / in path instead of // or \. Because this string will be used in generating link to image file.
-subfolder = r'Projects/Project1'
-parent_folder = os.path.join(parent_folder,subfolder)
-# subfolder = None
-input_filename = 'plot1.ipynb'
+# subfolder = r'Projects/Project1'
+# parent_folder = os.path.join(parent_folder,subfolder)
+input_filename = 'Readme.ipynb'
 output_filename = 'README.md'
 
 
