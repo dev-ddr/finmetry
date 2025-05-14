@@ -92,8 +92,8 @@ def get_file_name(fname: str) -> list[str]:
     return [x for x in _os.listdir(fname) if _os.path.isfile(_os.path.join(fname, x))]
 
 
-def append_it(data:_pd.DataFrame,filepath:str)->None:
-    """Appends the data after comparision to data on given filepath.
+def append_it(data: _pd.DataFrame, filepath: str) -> None:
+    """Appends the data on the given filepath after comparing Indexes of both the data.
 
     This compares the data already at the given filepath, and then appends only the data not already present.
 
@@ -109,15 +109,40 @@ def append_it(data:_pd.DataFrame,filepath:str)->None:
         ### checking the data after the last date
         d1 = df1.index[-1]
         f1 = data.index > d1
-        df1 = _pd.concat([df1,data[f1]])
+        df1 = _pd.concat([df1, data[f1]])
         ### checking the data before the first date
         d1 = df1.index[0]
         f1 = data.index < d1
-        df1 = _pd.concat([data[f1],df1])
+        df1 = _pd.concat([data[f1], df1])
 
         df1.to_pickle(filepath)
         return
     except FileNotFoundError as e:
-        print(f'Creating the file - {filepath}')
+        print(f"Creating the file - {filepath}")
         data.to_pickle(filepath)
         return
+
+
+def append_it_blind(data: _pd.DataFrame, filepath: str) -> None:
+    """Appends the data at the given filepath
+
+    This blindly appends the data on the given filepath even if the data is repitition of available data.
+
+    Parameters
+    ----------
+    data : _pd.DataFrame
+        data frame with Datetime like index
+    filepath : str
+        filepath, where the dataframe will be appended.
+    """
+    try:
+        df1 = _pd.read_pickle(filepath)
+        df1 = _pd.concat([data, df1])
+        df1.to_pickle(filepath)
+        return
+    except FileNotFoundError as e:
+        print(f"Creating the file - {filepath}")
+        data.to_pickle(filepath)
+        return
+
+

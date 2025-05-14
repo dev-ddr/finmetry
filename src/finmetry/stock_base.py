@@ -70,6 +70,7 @@ class Stock:
         self,
         data: _pd.DataFrame,
         interval: str,
+        overwrite:bool=False,
     ) -> None:
         """saves the historical stock data.
 
@@ -81,6 +82,8 @@ class Stock:
             Data to be saved.
         interval : str
             time interval of the data
+        overwrite : bool
+            wheather to overwrite the existing file or just append the new data. default False. If True then it will overwrite the present data.
         """
         self.data = data
 
@@ -100,7 +103,11 @@ class Stock:
                 data2 = data1[f1]
                 filename = f"{y}{str(m).zfill(2)}_{interval}.pickle"
                 filepath = _os.path.join(self.local_data_foldpath, filename)
-                append_it(data2, filepath=filepath)
+                if overwrite:
+                    print('Overwriting:-',filepath)
+                    data.to_pickle(filepath)
+                else:
+                    append_it(data2, filepath=filepath)
         return
 
     def load_historical_data(
@@ -108,6 +115,7 @@ class Stock:
         interval: str,
         start: Union[str, _dtm.datetime],
         end: Union[str, _dtm.datetime],
+        append_pseudo_data: bool = False,
     ) -> _pd.DataFrame:
         """Loads the data from local_directory
 
@@ -119,6 +127,8 @@ class Stock:
             start date of the data. The data for this date will be downloaded
         end : Union[str, _dtm.datetime]
             end date of the data. The data for this date will be downloaded
+        append_pseudo_data : bool, Default is False
+            It appends extra data for any day on which the data is not available. Say for Feb, there is no 31/02....so if this argument is True then the data for this date is created by copying the same data of the previous available date.
 
         Returns
         -------
@@ -151,9 +161,8 @@ class Stock:
                 dt_val = dt1.year * 100 + dt1.month
                 ### if this integer lies between the start and end date integer then read this file.
                 if (dt_val >= start_val) and (dt_val <= end_val):
-                    datas.append(
-                        _pd.read_pickle(_os.path.join(self.local_data_foldpath, fname))
-                    )
+                    data1 = _pd.read_pickle(_os.path.join(self.local_data_foldpath, fname))
+                    datas.append(data1)
                     dates.append(dt_val)
 
         if dates == []:
@@ -169,6 +178,7 @@ class Stock:
         ### after this the data will be filtered with date
         f1 = (ans.index.date >= start.date()) & (ans.index.date <= end.date())
         return ans[f1]
+    
 
     @property
     def scrip_filepath(self) -> str:
@@ -358,10 +368,30 @@ class Stock:
                         elif op_name[-2] == "PE":
                             ans_pe[strike] = _pd.read_pickle(fp2)
 
-        d1_CE = _pd.concat(ans_ce.values(), axis=1, keys=ans_ce.keys()).swaplevel(
+        ### only appending those strikes where full data is available.
+        shapes1 = []
+        for ky in ans_ce:
+            shapes1.append(ans_ce[ky].shape[0])
+        shape1 = max(shapes1)
+        ans_ce1 = {}
+        for ky in ans_ce:
+            if ans_ce[ky].shape[0] == shape1:
+                ans_ce1[ky] = ans_ce[ky]
+
+        shapes1 = []
+        for ky in ans_pe:
+            shapes1.append(ans_pe[ky].shape[0])
+        shape1 = max(shapes1)
+        ans_pe1 = {}
+        for ky in ans_pe:
+            if ans_pe[ky].shape[0] == shape1:
+                ans_pe1[ky] = ans_pe[ky]
+
+        
+        d1_CE = _pd.concat(ans_ce1.values(), axis=1, keys=ans_ce1.keys()).swaplevel(
             0, axis=1
         )
-        d1_PE = _pd.concat(ans_pe.values(), axis=1, keys=ans_pe.keys()).swaplevel(
+        d1_PE = _pd.concat(ans_pe1.values(), axis=1, keys=ans_pe1.keys()).swaplevel(
             0, axis=1
         )
 
@@ -381,5 +411,5 @@ class Stock:
             arr1[f1] = 0
             d1_PE["BasicValue", ky] = arr1
             d1_PE["ExpectedValue", ky] = d1_PE["LastTradedPrice", ky] - arr1
-        self.bnf, self.d1_CE, self.d1_PE = bnf, d1_CE, d1_PE
+        self.bnf, self.d1_CE, self.d1_PE = bnf.sort_index(), d1_CE.sort_index(), d1_PE.sort_index()
         return self.bnf, self.d1_CE, self.d1_PE

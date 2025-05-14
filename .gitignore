@@ -17,8 +17,15 @@ __pycache__/
 
 ### Projects to ignore
 Projects/option_strategy1
+Projects/option_strategy2
+Projects/option_strategy3
 Projects/market_depth_analysis
 Projects/Dash_app1
+Projects/historical_data_analysis
+Projects/going_live
+Projects/going_live2
+Projects/Machine_learning
+
 
 
 ### due to using tox and pytest
