@@ -173,35 +173,6 @@ class Client5paisa(_p5.FivePaisaClient):
         else:
             return True
 
-    # def historical_data(
-    #     self,
-    #     Exch: str,
-    #     ExchangeSegment: str,
-    #     ScripCode: int,
-    #     time: str,
-    #     From: str,
-    #     To: str,
-    # ) -> _pd.DataFrame:
-    #     """Downloads the data.
-    #     Returns
-    #     -------
-    #     _pd.DataFrame
-    #         data
-    #     """
-    #     self.jwt_headers["x-clientcode"] = self.client_code
-    #     self.jwt_headers["x-auth-token"] = self.Jwt_token
-    #     url = f"{self.HISTORICAL_DATA_ROUTE}{Exch}/{ExchangeSegment}/{ScripCode}/{time}?from={From}&end={To}"
-    #     timeList = ["1m", "5m", "10m", "15m", "30m", "60m", "1d"]
-    #     if time not in timeList:
-    #         return "Invalid Time Frame. it should be within [1m,5m,10m,15m,30m,60m,1d]."
-    #     else:
-    #         response = self.session.get(url, headers=self.jwt_headers).json()
-    #         candleList = response["data"]["candles"]
-    #         df = _pd.DataFrame(candleList)
-    #         df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
-    #         df["Datetime"] = _pd.to_datetime(df["Datetime"])
-    #         return df.set_index("Datetime")
-
     def download_historical_data(
         self,
         stocklist: Union[list[Stock] , StockList],
@@ -235,15 +206,20 @@ class Client5paisa(_p5.FivePaisaClient):
 
         for s1 in stocklist:
             print(s1.symbol)
+            df = self.historical_data(
+                s1.exchange,
+                s1.exchange_type,
+                scrip.loc[s1.symbol, "Scripcode"],
+                interval,
+                start,
+                end,
+                )
+            df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
+            df["Datetime"] = _pd.to_datetime(df["Datetime"])
+            df = df.set_index("Datetime")
+            ### saving
             s1.save_historical_data(
-                self.historical_data(
-                    s1.exchange,
-                    s1.exchange_type,
-                    scrip.loc[s1.symbol, "Scripcode"],
-                    interval,
-                    start,
-                    end,
-                ),
+                df,
                 interval=interval,
                 overwrite=overwrite
             )
