@@ -14,7 +14,7 @@ with open('README.md') as readme_file:
 requirements = [
     "numpy",
     "pandas",
-    "py5paisa==0.7.0",
+    "py5paisa",
 ]
 
 setup_requirements = []

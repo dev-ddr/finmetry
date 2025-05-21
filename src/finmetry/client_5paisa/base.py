@@ -40,7 +40,7 @@ class ScripMaster:
             filepath to .csv file. If filepath is given then it reads the file, else it will download the file. by default None
         """
         if filepath is not None:
-            self.data = _pd.read_csv(filepath, index_col=0, low_memory=False)
+            self.data = _pd.read_pickle(filepath)
         else:
             self.data = _pd.read_csv(
                 "https://images.5paisa.com/website/scripmaster-csv-format.csv"
@@ -64,14 +64,14 @@ class ScripMaster:
         Parameters
         ----------
         filepath : str
-            filepath with filename with .csv extention
+            filepath with filename with .pkl extention
 
         Returns
         -------
         _type_
             None
         """
-        return self.data.to_csv(filepath)
+        return self.data.to_pickle(filepath)
 
     def get_scrip(self, stocklist: Union[list[Stock] , StockList]) -> _pd.DataFrame:
         """returns the scrips for list of stocks
@@ -115,12 +115,12 @@ class ScripMaster:
 class Client5paisa(_p5.FivePaisaClient):
     def __init__(
         self,
+        loggedin_client: _p5.FivePaisaClient = None,
         email: str = None,
         password: str = None,
         dob: str = None,
         cred: dict = None,
         scrip_master: ScripMaster = None,
-        login_using_token: bool = False,
     ) -> None:
         """Logs into the 5paisa client.
 
@@ -137,19 +137,14 @@ class Client5paisa(_p5.FivePaisaClient):
             First login to 5paisa. And in menu -> Developer's API -> Get API keys. API credentials can be found.
         scrip_master : ScripMaster
             ScripMaster instance. This will be used for generating required inputs for various data fatching methods.
-        login_using_token : bool
+        loggedin_client : _p5.FivePaisaClient
+            If this is provided then this will be used as a super class.
             If True then you have to go to URL and input the response URL. By default False.
         """
-        if login_using_token:
-            _p5.FivePaisaClient.__init__(self, cred=cred)
-            print("go to this URL and input the response token")
-            print(
-                f'https://dev-openapi.5paisa.com/WebVendorLogin/VLogin/Index?VendorKey={cred["USER_KEY"]}&ResponseURL=https://www.5paisa.com/technology/developer-apis'
-            )
-            str1 = input("input the whole URL after login here")
-            token = str1.split("RequestToken=")[-1].split("&state")[0]
-            self.get_access_token(token)
+        if loggedin_client is not None:
+            self.__dict__ = loggedin_client.__dict__.copy()
         else:
+            print('This is now depreciated method. However, if you want to use this then get py5paisa=0.7.0')
             _p5.FivePaisaClient.__init__(
                 self, email=email, passwd=password, dob=dob, cred=cred
             )
@@ -178,34 +173,34 @@ class Client5paisa(_p5.FivePaisaClient):
         else:
             return True
 
-    def historical_data(
-        self,
-        Exch: str,
-        ExchangeSegment: str,
-        ScripCode: int,
-        time: str,
-        From: str,
-        To: str,
-    ) -> _pd.DataFrame:
-        """Downloads the data.
-        Returns
-        -------
-        _pd.DataFrame
-            data
-        """
-        self.jwt_headers["x-clientcode"] = self.client_code
-        self.jwt_headers["x-auth-token"] = self.Jwt_token
-        url = f"{self.HISTORICAL_DATA_ROUTE}{Exch}/{ExchangeSegment}/{ScripCode}/{time}?from={From}&end={To}"
-        timeList = ["1m", "5m", "10m", "15m", "30m", "60m", "1d"]
-        if time not in timeList:
-            return "Invalid Time Frame. it should be within [1m,5m,10m,15m,30m,60m,1d]."
-        else:
-            response = self.session.get(url, headers=self.jwt_headers).json()
-            candleList = response["data"]["candles"]
-            df = _pd.DataFrame(candleList)
-            df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
-            df["Datetime"] = _pd.to_datetime(df["Datetime"])
-            return df.set_index("Datetime")
+    # def historical_data(
+    #     self,
+    #     Exch: str,
+    #     ExchangeSegment: str,
+    #     ScripCode: int,
+    #     time: str,
+    #     From: str,
+    #     To: str,
+    # ) -> _pd.DataFrame:
+    #     """Downloads the data.
+    #     Returns
+    #     -------
+    #     _pd.DataFrame
+    #         data
+    #     """
+    #     self.jwt_headers["x-clientcode"] = self.client_code
+    #     self.jwt_headers["x-auth-token"] = self.Jwt_token
+    #     url = f"{self.HISTORICAL_DATA_ROUTE}{Exch}/{ExchangeSegment}/{ScripCode}/{time}?from={From}&end={To}"
+    #     timeList = ["1m", "5m", "10m", "15m", "30m", "60m", "1d"]
+    #     if time not in timeList:
+    #         return "Invalid Time Frame. it should be within [1m,5m,10m,15m,30m,60m,1d]."
+    #     else:
+    #         response = self.session.get(url, headers=self.jwt_headers).json()
+    #         candleList = response["data"]["candles"]
+    #         df = _pd.DataFrame(candleList)
+    #         df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
+    #         df["Datetime"] = _pd.to_datetime(df["Datetime"])
+    #         return df.set_index("Datetime")
 
     def download_historical_data(
         self,
