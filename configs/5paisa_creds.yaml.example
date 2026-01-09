@@ -1,0 +1,11 @@
+account2:
+  account_holder_name: "asdfasdfasdv"
+  cred:
+    APP_NAME: "asdfasasdfadfas"
+    APP_SOURCE: "asdfasdfsadfa"
+    USER_ID: "asdfasdasdfafasdf"
+    PASSWORD: "asdfasdfaasfassdf"
+    USER_KEY: "asdfasdghfgfasdf"
+    ENCRYPTION_KEY: "asdasfgfasdfacvdsf"
+  client_code: 'asdfaasfgasdcasc'
+  mpin: '496165216546'

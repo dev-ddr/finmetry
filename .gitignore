@@ -1,20 +1,41 @@
-### files to ignore
-Readme.ipynb
+### Notebooks (private / legacy)
 *.ipynb
-**/ Readme.ipynb
-md_convertor.py
+**/.ipynb_checkpoints/
 
-### general things to ignore
+### Build artifacts
 build/
 dist/
 *.egg-info/
 *.egg
-*.py[cod]
+
+### Python cache
 __pycache__/
-**/*.ipynb_checkpoints/
+*.py[cod]
 *.so
 *~
 
-### due to using tox and pytest
-.tox
-.cache
+### Testing / tooling
+.tox/
+.cache/
+
+### Virtual environments
+.venv/
+
+### VS Code (project settings allowed)
+# .vscode/settings.local.json
+# .vscode/launch.json
+
+### Configs (structure only)
+configs/*
+!configs/.gitkeep
+!configs/*.example
+
+### Runtime / experiment data
+data/*
+!data/.gitkeep
+
+envs/*
+!envs/.gitkeep
+
+mlflow_experiments/*
+!mlflow_experiments/.gitkeep
