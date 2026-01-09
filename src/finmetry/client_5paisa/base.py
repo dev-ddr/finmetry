@@ -273,10 +273,18 @@ class Client5paisa(_p5.FivePaisaClient):
         _pd.DataFrame
             Live Market Feed for all the Stocks in list.
         """
-        a = self.scrip_master.get_scrip(stocklist)
-        a = a[["Exch", "ExchType", "Symbol"]].to_dict(orient="records")
-        d1 = _pd.DataFrame(self.fetch_market_feed(a)["Data"])
+        # a = self.scrip_master.get_scrip(stocklist)
+        # a = a[["Exch", "ExchType", "Symbol"]].to_dict(orient="records")
+        # d1 = _pd.DataFrame(self.fetch_market_feed(a)["Data"])
+        # d1["Datetime"] = _dtm.datetime.now()
+
+        a = self.scrip_master.get_scrip(stocklist).rename(columns={"Scripcode": "ScripCode"})
+        a = a[["Exch", "ExchType", "ScripCode"]].to_dict(orient="records")
+        step = 50
+        d1 = [_pd.DataFrame(self.fetch_market_feed_scrip(a[i:i+step])['Data']) for i in range(0,len(a),step)]
+        d1 = _pd.concat(d1)
         d1["Datetime"] = _dtm.datetime.now()
+
         return d1
 
     def get_market_data(
