@@ -2,6 +2,9 @@
 *.ipynb
 **/.ipynb_checkpoints/
 
+### mkdocs params
+site/
+
 ### Build artifacts
 build/
 dist/
