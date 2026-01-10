@@ -4,6 +4,7 @@
 
 ### mkdocs params
 site/
+mkdocs.yml
 
 ### Build artifacts
 build/
