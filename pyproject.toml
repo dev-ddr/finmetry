@@ -38,10 +38,14 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-cov", "ruff"]
-docs = ["sphinx", "mkdocs"]
-viz = ["matplotlib", "plotly"]
-all = ["pytest", "ruff", "sphinx", "mkdocs", "matplotlib", "plotly"]
+# dev = ["pytest", "pytest-cov", "ruff", "jupyter", "notebook"]
+# docs = ["sphinx", "mkdocs", "nbconvert"]
+# viz = ["matplotlib", "plotly"]
+dev = [
+"pytest", "ruff", "jupyter", "notebook", 
+"sphinx", "mkdocs", "mkdocs-material", "mkdocstrings[python]", "nbconvert", 
+"matplotlib", "plotly"
+]
 
 [project.urls]
 Homepage = "https://github.com/dev-ddr/finmetry"
