@@ -321,24 +321,6 @@
         
       
       
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Home
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
       <a href="." class="md-nav__link md-nav__link--active">
         
   
@@ -355,69 +337,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why-finmetry-exists" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why finmetry exists
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-principles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design principles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#who-this-is-for" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who this is for
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-finmetry-is-not" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What finmetry is NOT
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
       
     </li>
   
@@ -872,58 +791,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#why-finmetry-exists" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Why finmetry exists
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-principles" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design principles
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#who-this-is-for" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Who this is for
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#what-finmetry-is-not" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        What finmetry is NOT
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -942,29 +809,63 @@
   
 
 
-<h1 id="finmetry">finmetry</h1>
-<p>A research-first quantitative trading framework for systematic experimentation,
-backtesting, and reproducible strategy development.</p>
-<h2 id="why-finmetry-exists">Why finmetry exists</h2>
-<p>(finmetry’s research motivation)</p>
-<h2 id="design-principles">Design principles</h2>
-<ul>
-<li>Research-first, not trading-first</li>
-<li>Explicit assumptions</li>
-<li>No hidden state</li>
-<li>Reproducible experiments</li>
-</ul>
-<h2 id="who-this-is-for">Who this is for</h2>
-<ul>
-<li>Quant researchers</li>
-<li>Systematic traders</li>
-<li>ML researchers working with financial data</li>
-</ul>
-<h2 id="what-finmetry-is-not">What finmetry is NOT</h2>
-<ul>
-<li>Not a signal-selling tool</li>
-<li>Not a plug-and-play trading bot</li>
-</ul>
+<h1 id="finmetry">Finmetry</h1>
+<p><strong>This project is developed for my personal use.</strong> I am developing this to keep the documentation, architecture and pipeline consistent so that I can focus more on developing strategies instead of developing pipelines.</p>
+<p>Visit <a href="https://dev-ddr.github.io/finmetry/">Finmetry</a> guide for further steps.</p>
+<h1 id="overview">Overview</h1>
+<p>Finmetry majorly consists of 5 modules. Each module responsible for various aspects of the fin-quant pipeline.</p>
+<ol>
+<li>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/data_handling_module/">Data handling module</a> :- Responsible for downloading and managing the data locally. Furthermore, this pipeline is responsible for providing data to <em>stocks module</em> when requested.</p>
+</li>
+<li>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/stocks_module/">Stocks module</a> :- Responsible for handling the stocks level data. The <em>data handling module</em> works with the Stocks object. The Stocks object carries necessary information about the underlying security. This information is used by other modules for their tasks. For eg., the <em>data handling module</em> uses the information about the stocks class to download the live/historical data about the stock.</p>
+</li>
+<li>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/strategy_module/">Strategy module</a> :- The strategy is fromed from <em>Stocks</em> and <em>StrategyConfig</em> modules. For a given timestamp, the strategy computes various parameters and outputs the <em>orders</em>.</p>
+</li>
+<li>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/portfolio_handling/">Portfolio module</a> :- The portfolio module is responsible for generating the report of the strategy. In live environment, this module also performs the actual actions with the client.</p>
+</li>
+<li>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/backtesting/">Backtester module</a> :- Backtests the strategy by going through the data like in an actual environment. This module loops from start-time to end-time and obtains the orders from the strategy and gives it to the portfolio. The portfolio at the end of the loop generates the report.</p>
+</li>
+</ol>
+<p>Below figure shows the framework overview uptill getting the orders from the strategy.</p>
+<pre class="mermaid"><code>
+flowchart TB
+
+subgraph DATA["Data handlers"]
+    %% direction  LR
+    dp[DataProviderClient]
+    dh[DataHandler]
+    db[(database &lt;br&gt; local storage)]
+
+    dp --market-data &lt;br&gt; OHLCV--&gt; dh
+    dh --write--&gt; db
+    db --read--&gt; dh
+end
+
+sd1@{ shape: procs, label: "StockDict"}
+
+subgraph STRATEGY["Strategy"]
+    %% direction LR
+    sconfig[[StrategyConfig]]
+    stg1[Strategy]
+end
+
+orders@{ shape: docs, label: "Orders" }
+stginput@{ shape: lean-r, label: "TimeStamp" }
+stg1 --&gt; orders
+sd1 --&gt; stg1
+stginput --&gt; stg1
+
+sd1 --data for stock *i* from &lt;br&gt;*t1* to *t2* timestamp--&gt; dh
+dh --OHLCV dataframe--&gt; sd1
+</code></pre>
+<blockquote>
+<p>This project is solely developed for my personal use. I am publishing this only to keep myself updated and to remove the headache of setting up the framework again and again.</p>
+</blockquote>
 
 
 
