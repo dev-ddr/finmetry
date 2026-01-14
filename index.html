@@ -815,13 +815,13 @@
 <p>Finmetry majorly consists of 5 modules. Each module responsible for various aspects of the fin-quant pipeline.</p>
 <ol>
 <li>
-<p><a href="https://dev-ddr.github.io/finmetry/concepts/data_handling_module/">Data handling module</a> :- Responsible for downloading and managing the data locally. Furthermore, this pipeline is responsible for providing data to <em>stocks module</em> when requested.</p>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/client_handling_module/">Client handling module</a> :- Handles APIs of different clients. These clients are often the stock brokers like 5paisa, zerodha, dhan etc. This module bridges the client-API and the finmetry API. The major responsibility of this module is to download the stocks data, which can be historical or live.</p>
 </li>
 <li>
-<p><a href="https://dev-ddr.github.io/finmetry/concepts/stocks_module/">Stocks module</a> :- Responsible for handling the stocks level data. The <em>data handling module</em> works with the Stocks object. The Stocks object carries necessary information about the underlying security. This information is used by other modules for their tasks. For eg., the <em>data handling module</em> uses the information about the stocks class to download the live/historical data about the stock.</p>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/stocks_handling_module/">Stocks handling module</a> :- Responsible for handling the stocks level data. The <em>client handling module</em> works with the Stocks object. The Stocks object carries necessary information about the underlying security. This information is used by other modules for their tasks. This module also contains <em>StockDict</em> object which is kind of a data container to handle multiple stocks. All other modules in this project works with <em>StockDict</em> object. For eg., the <em>client handling module</em> gets the underlying stocks information from <em>StockDict</em> objext which it uses further to download the live/historical data about each stock. </p>
 </li>
 <li>
-<p><a href="https://dev-ddr.github.io/finmetry/concepts/strategy_module/">Strategy module</a> :- The strategy is fromed from <em>Stocks</em> and <em>StrategyConfig</em> modules. For a given timestamp, the strategy computes various parameters and outputs the <em>orders</em>.</p>
+<p><a href="https://dev-ddr.github.io/finmetry/concepts/strategy_handling_module/">Strategy handling module</a> :- The strategy is formed from <em>StockDict</em> and <em>StrategyConfig</em> modules. The <em>StockDict</em> objet tell "on which stock or on which all stocks the stretegy runs". This is for initializing the strategy. For running the strategy, a timestamp is only required. For a given timestamp, the strategy computes various parameters and outputs the <em>orders</em>.</p>
 </li>
 <li>
 <p><a href="https://dev-ddr.github.io/finmetry/concepts/portfolio_handling/">Portfolio module</a> :- The portfolio module is responsible for generating the report of the strategy. In live environment, this module also performs the actual actions with the client.</p>
@@ -834,18 +834,24 @@
 <pre class="mermaid"><code>
 flowchart TB
 
-subgraph DATA["Data handlers"]
+subgraph DATA["Data handling"]
     %% direction  LR
-    dp[DataProviderClient]
-    dh[DataHandler]
-    db[(database &lt;br&gt; local storage)]
+    s1[Stock]
 
-    dp --market-data &lt;br&gt; OHLCV--&gt; dh
-    dh --write--&gt; db
-    db --read--&gt; dh
+    subgraph Download["Downloading data"]
+    dp[Client API]
+    dh[finmetry&lt;br&gt;Client]
+    end
+
+    subgraph LOCAL["Local data"]
+    db[(database &lt;br&gt; local storage)]
+    end
+    s1 --request--&gt; dh --request--&gt; dp --data--&gt; dh --data--&gt;s1
+    s1 --write--&gt;db --read--&gt; s1
+
 end
 
-sd1@{ shape: procs, label: "StockDict"}
+s1 --&gt; sd1@{ shape: procs, label: "StockDict"}
 
 subgraph STRATEGY["Strategy"]
     %% direction LR
@@ -859,8 +865,8 @@ stg1 --&gt; orders
 sd1 --&gt; stg1
 stginput --&gt; stg1
 
-sd1 --data for stock *i* from &lt;br&gt;*t1* to *t2* timestamp--&gt; dh
-dh --OHLCV dataframe--&gt; sd1
+%% sd1 --data for stock *i* from &lt;br&gt;*t1* to *t2* timestamp--&gt; dh
+%% dh --OHLCV dataframe--&gt; sd1
 </code></pre>
 <blockquote>
 <p>This project is solely developed for my personal use. I am publishing this only to keep myself updated and to remove the headache of setting up the framework again and again.</p>

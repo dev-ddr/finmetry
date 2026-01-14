@@ -932,7 +932,7 @@ dhm[(Local &lt;br&gt; database)]
 st1 --data for stock from &lt;br&gt;*t1* to *t2* timestamp--&gt; dhm
 dhm --OHLCV dataframe--&gt; st1
 
-Symbol &amp; e["`Exchange&lt;br&gt;(NSE)`"] &amp; et["`Exchange&lt;br&gt;type&lt;br&gt;(Cash)`"] --&gt; st1
+Symbol([Symbol]) &amp; e(["`Exchange&lt;br&gt;(NSE)`"]) &amp; et(["`Exchange&lt;br&gt;type&lt;br&gt;(Cash)`"]) --&gt; st1
 
 st1 --&gt; sd1@{ shape: procs, label: "StockDict"}</code></pre>
 <p>The <strong>Stock</strong> object takes in the input of <code>Exchange</code> and <code>Exchange_type</code>, which tells the type of the security. The <em>Stock</em> object handles the reading and writing of the data to the local database. The <em>Stock</em> class uses <em>duckdb</em> for managing database with <code>.parquet</code> files. This enables quicker read/write.</p>
