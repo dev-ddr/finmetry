@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../strategy_module/">
+        <link rel="prev" href="../portfolio_handling_module/">
       
       
-        <link rel="next" href="../backtesting/">
+        <link rel="next" href="../../api/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Portfolio - finmetry</title>
+        <title>Backtesting - finmetry</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#portfolio-handler" class="md-skip">
+        <a href="#backtester" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Portfolio
+              Backtesting
             
           </span>
         </div>
@@ -541,14 +541,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../data_handling_module/" class="md-nav__link">
+      <a href="../client_handling_module/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Handling
+    Client
   
 
     
@@ -569,7 +569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stocks_module/" class="md-nav__link">
+      <a href="../stocks_handling_module/" class="md-nav__link">
         
   
   
@@ -597,7 +597,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../strategy_module/" class="md-nav__link">
+      <a href="../strategy_handling_module/" class="md-nav__link">
         
   
   
@@ -605,6 +605,34 @@
     
   
     Strategy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../portfolio_handling_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Portfolio
   
 
     
@@ -639,7 +667,7 @@
   <span class="md-ellipsis">
     
   
-    Portfolio
+    Backtesting
   
 
     
@@ -657,7 +685,7 @@
   <span class="md-ellipsis">
     
   
-    Portfolio
+    Backtesting
   
 
     
@@ -681,10 +709,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#portfolio-handler" class="md-nav__link">
+  <a href="#backtester" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Portfolio handler
+        Backtester
       
     </span>
   </a>
@@ -695,34 +723,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Backtesting
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -847,10 +847,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#portfolio-handler" class="md-nav__link">
+  <a href="#backtester" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Portfolio handler
+        Backtester
       
     </span>
   </a>
@@ -877,17 +877,24 @@
   
 
 
-  <h1>Portfolio</h1>
+  <h1>Backtesting</h1>
 
-<h2 id="portfolio-handler">Portfolio handler</h2>
+<h2 id="backtester">Backtester</h2>
 <pre class="mermaid"><code>
 flowchart LR
 
-orders@{ shape: docs, label: "Orders" } --&gt; 
-iflv@{ shape: diamond, label: "is live market" } --yes--&gt; od[Place order &lt;br&gt; through clients] --&gt;
-ph1[PortfolioHandler]
-iflv --"no"--&gt; ph1
-</code></pre>
+subgraph loop["Loop"]
+direction LR
+lex@{ shape: rect, label: "LoopExecuter" } --&gt;
+ts@{ shape: lean-r, label: "TimeStamp" } --&gt;
+stg([Strategy &lt;br&gt; module]) --&gt; 
+orders@{ shape: docs, label: "Orders" } --&gt;
+ptf([Portfolio &lt;br&gt; Handler]) --&gt; lex
+end
+
+t1[Start time] --&gt; loop
+t2["End time"] --&gt; loop
+loop --"end of loop"--&gt; report</code></pre>
 
 
 

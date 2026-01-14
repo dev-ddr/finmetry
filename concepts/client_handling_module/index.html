@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../stocks_module/">
+        <link rel="prev" href="../architecture/">
       
       
-        <link rel="next" href="../portfolio_handling/">
+        <link rel="next" href="../stocks_handling_module/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Strategy - finmetry</title>
+        <title>Client - finmetry</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#strategy-module" class="md-skip">
+        <a href="#client-handling-module" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Strategy
+              Client
             
           </span>
         </div>
@@ -538,17 +538,44 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../data_handling_module/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Client
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Handling
+    Client
   
 
     
@@ -557,6 +584,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#loggin-in-to-the-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Loggin-in to the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading Data
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -569,7 +638,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stocks_module/" class="md-nav__link">
+      <a href="../stocks_handling_module/" class="md-nav__link">
         
   
   
@@ -594,35 +663,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Strategy
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../strategy_handling_module/" class="md-nav__link">
         
   
   
@@ -638,35 +682,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#strategy-module" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Strategy module
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -679,7 +694,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../portfolio_handling/" class="md-nav__link">
+      <a href="../portfolio_handling_module/" class="md-nav__link">
         
   
   
@@ -707,7 +722,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
+      <a href="../backtesting_handling_module/" class="md-nav__link">
         
   
   
@@ -839,6 +854,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -847,10 +864,21 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#strategy-module" class="md-nav__link">
+  <a href="#loggin-in-to-the-client" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Strategy module
+        Loggin-in to the client
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#downloading-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Downloading Data
       
     </span>
   </a>
@@ -877,22 +905,62 @@
   
 
 
-  <h1>Strategy</h1>
-
-<h2 id="strategy-module">Strategy module</h2>
-<pre class="mermaid"><code>
+<h1 id="client-handling-module">Client handling module</h1>
+<p>The most important part of the algo trading project is the data. For this I am using third party API to donwload the data. Moreover, these APIs can also provide the interfact to place the order on the market. But right now, I will only focus on data downloading part.</p>
+<p>There are few data providers like <em>yfinance</em> which are free. Also, there are other clients or say brokers which provides the API for placing orders which also provides historical data, like <a href="https://pypi.org/project/py5paisa/0.2.9/">5paisa</a>, <a href="https://kite.trade/docs/pykiteconnect/v4/">zeroda</a>, <a href="https://pypi.org/project/dhanhq/">dhan</a> etc. These clients provides the data to their customers free of cost (as far as I know). For this you need to have a Demat account with them. Anyways, I have a demat account on <em>5paisa</em> and thus I have developed a client using <em>py5paisa</em> api.</p>
+<p><pre class="mermaid"><code>
 flowchart LR
 
-sconfig[[StrategyConfig]]
-stg1[Strategy]
-orders@{ shape: docs, label: "Orders" }
-stginput@{ shape: lean-r, label: "TimeStamp" }
+cl[Client] --data request--&gt;
+odb[(Client API)] --OHLCV data --&gt; cl
+s1[Stock] --as input--&gt; cl
 
-sconfig --&gt; stg1
-stg1 --&gt; orders
-orders --&gt; stginput
-stginput --&gt; stg1
+ldb[(local &lt;br&gt;database)]
+
+s1--writes--&gt;ldb
+cl--data--&gt;s1
 </code></pre>
+Different clients may have different connection methods. Here, I will show you to how I connect with <a href="https://pypi.org/project/py5paisa/0.2.9/">py5paisa</a>. I keep the API-secrets in <code>yaml</code> config files. I read that and pass it to the <code>Client</code> object. Here is how the config looks like.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">account_holder_name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasdfasdv&quot;</span>
+<span class="nt">cred</span><span class="p">:</span>
+<span class="w">  </span><span class="nt">APP_NAME</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasasdfadfas&quot;</span>
+<span class="w">  </span><span class="nt">APP_SOURCE</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasdfsadfa&quot;</span>
+<span class="w">  </span><span class="nt">USER_ID</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasdasdfafasdf&quot;</span>
+<span class="w">  </span><span class="nt">PASSWORD</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasdfaasfassdf&quot;</span>
+<span class="w">  </span><span class="nt">USER_KEY</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdfasdghfgfasdf&quot;</span>
+<span class="w">  </span><span class="nt">ENCRYPTION_KEY</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;asdasfgfasdfacvdsf&quot;</span>
+<span class="nt">client_code</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;asdfaasfgasdcasc&#39;</span>
+<span class="nt">mpin</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;496165216546&#39;</span>
+</code></pre></div>
+<h2 id="loggin-in-to-the-client">Loggin-in to the client</h2>
+<p>Even with the loaded <code>creds</code>, we still need to pass <code>totp</code>. You can get it from a linked authenticator app.</p>
+<div class="highlight"><pre><span></span><code><span class="n">client</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">clients</span><span class="o">.</span><span class="n">client_5paisa</span><span class="o">.</span><span class="n">Client5paisa</span><span class="p">(</span><span class="n">totp</span><span class="o">=</span><span class="nb">input</span><span class="p">(</span><span class="s2">&quot;give totp from the autheticator app: &quot;</span><span class="p">),</span> <span class="o">**</span><span class="n">creds</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="downloading-data">Downloading Data</h2>
+<div class="highlight"><pre><span></span><code><span class="n">symbol</span> <span class="o">=</span> <span class="s2">&quot;IDEA&quot;</span>
+<span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="s2">&quot;2018-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2026-01-14&quot;</span>
+<span class="n">interval</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">INTERVAL</span><span class="o">.</span><span class="n">one_day</span>
+
+<span class="n">s1</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">Stock</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">download_historical_data</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span><span class="n">start</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
+</code></pre></div>
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+DatetimeIndex: 1992 entries, 2018-01-01 00:00:00 to 2026-01-14 09:15:00
+Data columns (total 5 columns):
+ #   Column  Non-Null Count  Dtype  
+---  ------  --------------  -----  
+ 0   Open    1992 non-null   float64
+ 1   High    1992 non-null   float64
+ 2   Low     1992 non-null   float64
+ 3   Close   1992 non-null   float64
+ 4   Volume  1992 non-null   int64  
+dtypes: float64(4), int64(1)
+memory usage: 93.4 KB
+</code></pre>
+<blockquote>
+<p>Note that this is one_day interval data.</p>
+</blockquote>
 
 
 

@@ -14,7 +14,7 @@
         <link rel="prev" href="../../getting-started/quickstart/">
       
       
-        <link rel="next" href="../data_handling_module/">
+        <link rel="next" href="../client_handling_module/">
       
       
         
@@ -66,6 +66,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#architecture" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -514,6 +519,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -544,14 +551,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../data_handling_module/" class="md-nav__link">
+      <a href="../client_handling_module/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Handling
+    Client
   
 
     
@@ -572,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stocks_module/" class="md-nav__link">
+      <a href="../stocks_handling_module/" class="md-nav__link">
         
   
   
@@ -600,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../strategy_module/" class="md-nav__link">
+      <a href="../strategy_handling_module/" class="md-nav__link">
         
   
   
@@ -628,7 +635,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../portfolio_handling/" class="md-nav__link">
+      <a href="../portfolio_handling_module/" class="md-nav__link">
         
   
   
@@ -656,7 +663,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
+      <a href="../backtesting_handling_module/" class="md-nav__link">
         
   
   
@@ -788,6 +795,8 @@
   
   
   
+    
+  
   
 </nav>
                   </div>
@@ -807,9 +816,13 @@
   
 
 
-  <h1>Architecture</h1>
-
-
+<h1 id="architecture">Architecture</h1>
+<p>For algo-trading/ quant-trading, the first thing required is the <strong>strategy</strong>. To develop a strategy we will need to <em>evaluate</em> it and for that we will have to <strong>backtest</strong> it. Moreover, we need the <strong>data</strong> for all this. The finmetry library provides the backbone of the strategy development pipeline.</p>
+<p>The finmetry library takes care of :-
+- downloading the stocks data using the client API
+- storing the data and retrieving from it efficiently
+- backtesting the strategy
+- generating the report of the backtest</p>
 
 
 

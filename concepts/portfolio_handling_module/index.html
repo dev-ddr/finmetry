@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../data_handling_module/">
+        <link rel="prev" href="../strategy_handling_module/">
       
       
-        <link rel="next" href="../strategy_module/">
+        <link rel="next" href="../backtesting_handling_module/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Stocks - finmetry</title>
+        <title>Portfolio - finmetry</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#stocks-module" class="md-skip">
+        <a href="#portfolio-handler" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Stocks
+              Portfolio
             
           </span>
         </div>
@@ -541,14 +541,70 @@
   
   
     <li class="md-nav__item">
-      <a href="../data_handling_module/" class="md-nav__link">
+      <a href="../client_handling_module/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Handling
+    Client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../stocks_handling_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../strategy_handling_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
   
 
     
@@ -583,7 +639,7 @@
   <span class="md-ellipsis">
     
   
-    Stocks
+    Portfolio
   
 
     
@@ -601,7 +657,7 @@
   <span class="md-ellipsis">
     
   
-    Stocks
+    Portfolio
   
 
     
@@ -625,10 +681,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#stocks-module" class="md-nav__link">
+  <a href="#portfolio-handler" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stocks module
+        Portfolio handler
       
     </span>
   </a>
@@ -651,63 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../strategy_module/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Strategy
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../portfolio_handling/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Portfolio
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
+      <a href="../backtesting_handling_module/" class="md-nav__link">
         
   
   
@@ -847,10 +847,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#stocks-module" class="md-nav__link">
+  <a href="#portfolio-handler" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stocks module
+        Portfolio handler
       
     </span>
   </a>
@@ -877,18 +877,16 @@
   
 
 
-  <h1>Stocks</h1>
+  <h1>Portfolio</h1>
 
-<h2 id="stocks-module">Stocks module</h2>
+<h2 id="portfolio-handler">Portfolio handler</h2>
 <pre class="mermaid"><code>
 flowchart LR
 
-st1[Stock] --&gt;
-sd1@{ shape: procs, label: "StockDict"}
-dhm([Data handling &lt;br&gt; module])
-
-sd1 --data for stock *i* from &lt;br&gt;*t1* to *t2* timestamp--&gt; dhm
-dhm --OHLCV dataframe--&gt; sd1
+orders@{ shape: docs, label: "Orders" } --&gt; 
+iflv@{ shape: diamond, label: "is live market" } --yes--&gt; od[Place order &lt;br&gt; through clients] --&gt;
+ph1[PortfolioHandler]
+iflv --"no"--&gt; ph1
 </code></pre>
 
 

@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../architecture/">
+        <link rel="prev" href="../stocks_handling_module/">
       
       
-        <link rel="next" href="../stocks_module/">
+        <link rel="next" href="../portfolio_handling_module/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Data Handling - finmetry</title>
+        <title>Strategy - finmetry</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#data-handling-module" class="md-skip">
+        <a href="#strategy-module" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Handling
+              Strategy
             
           </span>
         </div>
@@ -538,42 +538,17 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Data Handling
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../client_handling_module/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Data Handling
+    Client
   
 
     
@@ -582,35 +557,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#data-handling-module" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Data handling module
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -623,7 +569,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../stocks_module/" class="md-nav__link">
+      <a href="../stocks_handling_module/" class="md-nav__link">
         
   
   
@@ -648,10 +594,35 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../strategy_module/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Strategy
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -667,6 +638,35 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#strategy-module" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strategy module
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -679,7 +679,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../portfolio_handling/" class="md-nav__link">
+      <a href="../portfolio_handling_module/" class="md-nav__link">
         
   
   
@@ -707,7 +707,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../backtesting/" class="md-nav__link">
+      <a href="../backtesting_handling_module/" class="md-nav__link">
         
   
   
@@ -847,10 +847,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#data-handling-module" class="md-nav__link">
+  <a href="#strategy-module" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data handling module
+        Strategy module
       
     </span>
   </a>
@@ -877,20 +877,21 @@
   
 
 
-  <h1>Data Handling</h1>
+  <h1>Strategy</h1>
 
-<h2 id="data-handling-module">Data handling module</h2>
+<h2 id="strategy-module">Strategy module</h2>
 <pre class="mermaid"><code>
 flowchart LR
 
-dp[DataProviderClient]
-dh[DataHandler]
-db[(database &lt;br&gt; local storage)]
+sconfig[[StrategyConfig]]
+stg1[Strategy]
+orders@{ shape: docs, label: "Orders" }
+stginput@{ shape: lean-r, label: "TimeStamp" }
 
-dp --market-data &lt;br&gt; OHLCV--&gt; dh
-dh --write--&gt; db
-db --read--&gt; dh
-
+sconfig --&gt; stg1
+stg1 --&gt; orders
+orders --&gt; stginput
+stginput --&gt; stg1
 </code></pre>
 
 
