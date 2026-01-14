@@ -2,8 +2,6 @@
 
 **This project is developed for my personal use.** I am developing this to keep the documentation, architecture and pipeline consistent so that I can focus more on developing strategies instead of developing pipelines.
 
-Visit [Finmetry](https://dev-ddr.github.io/finmetry/) guide for further steps.
-
 # Overview
 
 Finmetry majorly consists of 5 modules. Each module responsible for various aspects of the fin-quant pipeline.

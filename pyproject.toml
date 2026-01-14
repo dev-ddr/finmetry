@@ -35,6 +35,7 @@ dependencies = [
   "duckdb==1.4.2",
   "pyarrow==22.0.0",
   "py5paisa==0.7.21.2",
+  "pydantic",
 ]
 
 [project.optional-dependencies]
@@ -69,4 +70,7 @@ line-length = 310
 select = ["E", "F", "I"]  # Errors, pyflakes, imports
 ignore = ["E501"]  # Disable long-line check (black handles it)
 src = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
 

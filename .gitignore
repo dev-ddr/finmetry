@@ -4,7 +4,10 @@
 
 ### mkdocs params
 site/
-mkdocs.yml
+# mkdocs.yml
+
+### bigdata
+data/
 
 ### Build artifacts
 build/

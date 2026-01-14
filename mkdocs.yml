@@ -1,0 +1,44 @@
+site_name: finmetry
+site_description: Research-first quantitative trading framework
+repo_url: https://github.com/dev-ddr/finmetry
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.copy
+
+markdown_extensions:
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+
+extra_javascript:
+  - https://unpkg.com/mermaid@11.3.0/dist/mermaid.min.js
+  - javascripts/mermaid.js
+
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Installation: getting-started/installation.md
+      - Quickstart: getting-started/quickstart.md
+  - Concepts:
+      - Architecture: concepts/architecture.md
+      - Client: concepts/client_handling_module.md
+      - Stocks: concepts/stocks_handling_module.md
+      - Strategy: concepts/strategy_handling_module.md
+      - Portfolio: concepts/portfolio_handling_module.md
+      - Backtesting: concepts/backtesting_handling_module.md
+  - API Reference:
+      - Overview: api/index.md
