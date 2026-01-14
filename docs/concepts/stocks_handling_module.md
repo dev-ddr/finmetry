@@ -12,7 +12,7 @@ dhm[(Local <br> database)]
 st1 --data for stock from <br>*t1* to *t2* timestamp--> dhm
 dhm --OHLCV dataframe--> st1
 
-Symbol & e["`Exchange<br>(NSE)`"] & et["`Exchange<br>type<br>(Cash)`"] --> st1
+Symbol([Symbol]) & e(["`Exchange<br>(NSE)`"]) & et(["`Exchange<br>type<br>(Cash)`"]) --> st1
 
 st1 --> sd1@{ shape: procs, label: "StockDict"}
 ```

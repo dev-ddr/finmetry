@@ -24,18 +24,24 @@ Below figure shows the framework overview uptill getting the orders from the str
 
 flowchart TB
 
-subgraph DATA["Data handlers"]
+subgraph DATA["Data handling"]
     %% direction  LR
-    dp[DataProviderClient]
-    dh[DataHandler]
-    db[(database <br> local storage)]
+    s1[Stock]
+    
+    subgraph Download["Downloading data"]
+    dp[Client API]
+    dh[finmetry<br>Client]
+    end
 
-    dp --market-data <br> OHLCV--> dh
-    dh --write--> db
-    db --read--> dh
+    subgraph LOCAL["Local data"]
+    db[(database <br> local storage)]
+    end
+    s1 --request--> dh --request--> dp --data--> dh --data-->s1
+    s1 --write-->db --read--> s1
+
 end
 
-sd1@{ shape: procs, label: "StockDict"}
+s1 --> sd1@{ shape: procs, label: "StockDict"}
 
 subgraph STRATEGY["Strategy"]
     %% direction LR
@@ -49,8 +55,8 @@ stg1 --> orders
 sd1 --> stg1
 stginput --> stg1
 
-sd1 --data for stock *i* from <br>*t1* to *t2* timestamp--> dh
-dh --OHLCV dataframe--> sd1
+%% sd1 --data for stock *i* from <br>*t1* to *t2* timestamp--> dh
+%% dh --OHLCV dataframe--> sd1
 
 ```
 
