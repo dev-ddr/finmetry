@@ -5,3 +5,8 @@ __version__ = version("finmetry")
 from . import clients
 from .stocks_handler import Stock, StockDict
 from . import constants
+from .strategy_handler import StrategyBase
+from .portfolio_handler import Portfolio
+from .backtest_handler import Backtester
+
+from .utils import *

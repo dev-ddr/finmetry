@@ -38,7 +38,7 @@
   "ruff.configuration": "pyproject.toml",
   "[python]": {
     // "editor.defaultFormatter": "astral-sh.ruff",
-    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.formatOnSave": true
   },
   "python.analysis.diagnosticMode": "workspace",

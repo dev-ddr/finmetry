@@ -156,7 +156,7 @@ class Stock:
         if isinstance(start, _dtm.datetime):
             start = start.strftime("%Y-%m-%d")
         if isinstance(end, _dtm.datetime):
-            end = end.strptime("%Y-%m-%d")
+            end = end.strftime("%Y-%m-%d")
 
         # DuckDB SQL
         query = f"""
