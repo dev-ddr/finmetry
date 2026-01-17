@@ -74,7 +74,7 @@ class MarketGraphData:
     """
 
     ### the time of the data. The StockData could have historical data upto this timestamp.
-    timestamp: np.datetime64
+    timestamp: str|datetime|np.datetime64
 
     ### nodes, named after its symbol
     stocks: Dict[str, StockData]
@@ -91,7 +91,7 @@ class MarketGraphData:
 ### the marketevent can be different for different strategy based on the data. So, if the strategy uses different samples of stocks then its data will be different and so its MarketEvent will be different even for the same timestamp.
 @dataclass(frozen=True)
 class MarketEvent:
-    timestamp: datetime
+    timestamp: str|datetime
     data: "MarketGraphData"
 
 

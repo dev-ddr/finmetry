@@ -10,19 +10,19 @@ class Portfolio:
         self.history: List[dict] = []
 
     def on_fill(self, fill: FillEvent):
+        """fills the order.
+
+        Parameters
+        ----------
+        fill : FillEvent
+            _description_
+        """
         order = fill.order
         cost = fill.qty * fill.fill_price
 
         if order.order_type.name.lower() == "buy":
             self.cash -= cost
-            self.positions[order.symbol] = Position(
-                symbol=order.symbol,
-                qty=fill.qty,
-                entry_price=fill.fill_price,
-                stop_loss=order.stop_loss,
-                target=order.target,
-                expiry=order.hold_uptill,
-            )
+            self.positions[order.symbol] = Position(symbol=order.symbol, qty=fill.qty, entry_price=fill.fill_price, stop_loss=order.stop_loss, target=order.target, expiry=order.hold_uptill)
 
         elif order.order_type.name.lower() == "sell":
             self.cash += cost
@@ -51,15 +51,13 @@ class Portfolio:
             else:
                 continue
 
-            exit_orders.append(
-                Order(
-                    symbol=pos.symbol,
-                    qty=pos.qty,
-                    price=exit_price,
-                    Datetime=market.timestamp,
-                    order_type=ORDERTYPE.sell,
-                    remarks=reason,
-                )
-            )
+            exit_orders.append(Order(symbol=pos.symbol, qty=pos.qty, price=exit_price, Datetime=market.timestamp, order_type=ORDERTYPE.sell, remarks=reason))
 
         return exit_orders
+
+    def mark_to_market(self, market: MarketGraphData):
+        equity = self.cash
+        for pos in self.positions.values():
+            equity += market.stocks[pos.symbol].close * pos.qty
+
+        self.history.append({"timestamp": market.timestamp, "equity": equity, "cash": self.cash})

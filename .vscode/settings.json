@@ -37,12 +37,13 @@
   "python.terminal.activateEnvironment": true,
   "ruff.configuration": "pyproject.toml",
   "[python]": {
-    // "editor.defaultFormatter": "astral-sh.ruff",
-    "editor.defaultFormatter": "ms-python.black-formatter",
-    "editor.formatOnSave": true
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": false
   },
-  "python.analysis.diagnosticMode": "workspace",
-  "python.analysis.typeCheckingMode": "basic",
+  // "python.analysis.diagnosticMode": "workspace",
+  // "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "openFilesOnly",
+  "python.analysis.typeCheckingMode": "off",
   "python.analysis.extraPaths": [
     "src"
   ],

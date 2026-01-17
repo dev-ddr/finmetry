@@ -6,7 +6,7 @@ import datetime as _dtm
 import numpy as _np
 import pandas as _pd
 
-from typing import TypeVar, Union
+from typing import TypeVar, Union, Optional
 
 from enum import Enum
 
@@ -66,6 +66,9 @@ class Stock:
             self.exchange_type = exchange_type.value
         else:
             raise ValueError("exchange_type can only be of type EXCHANGE_TYPE enum")
+        
+        
+        self.hist_data0: Optional[_pd.DataFrame] = None
 
     @property
     def foldname(self):

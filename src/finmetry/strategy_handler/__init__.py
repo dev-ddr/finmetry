@@ -1,2 +1,2 @@
 
-from .base import StrategyBase
+from .base import StrategyBase, StgDataLoader
