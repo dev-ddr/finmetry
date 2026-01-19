@@ -1,6 +1,7 @@
 from typing import List, Iterator
 import datetime as dtm
 import pandas as pd
+import numpy as np
 
 import finmetry as fm
 
@@ -22,8 +23,11 @@ def get_ema_stock_data(
     f1 = hist.index <= end_time
     hist = hist.loc[f1]
 
-    slow_avg = hist.iloc[-slow_window:]["Close"].mean()
-    fast_avg = hist.iloc[-fast_window:]["Close"].mean()
+    slow_avg1 = hist.shift(1).iloc[-slow_window:]["Close"].mean()
+    slow_avg2 = hist.iloc[-slow_window:]["Close"].mean()
+    fast_avg1 = hist.shift(1).iloc[-fast_window:]["Close"].mean()
+    fast_avg2 = hist.iloc[-fast_window:]["Close"].mean()
+
     last_data = hist.iloc[-1]
 
     return fm.constants.StockData(
@@ -33,10 +37,10 @@ def get_ema_stock_data(
         low=last_data["Low"],
         close=last_data["Close"],
         volume=last_data["Volume"],
-        timestamps=end_time,
+        timestamp=end_time,
         features={
-            "slow_avg": slow_avg,
-            "fast_avg": fast_avg,
+            "slow_avgs": np.array([slow_avg1, slow_avg2]),
+            "fast_avgs": np.array([fast_avg1, fast_avg2]),
         },
     )
 
@@ -59,13 +63,13 @@ class EMIDataLoader(fm.StgDataLoader):
     def __init__(self, stockdict: fm.StockDict, start_date: str, end_date: str, fast_window: int, slow_window: int, local_data_foldpath: str = LOCAL_DATA_FOLDPATH):
         self.stockdict = stockdict
         self.start_date = fm.str_to_dtm(start_date)
-        self._shifted_start_date = self.start_date - dtm.timedelta(days=slow_window)
         self.end_date = fm.str_to_dtm(end_date)
         self.fast_window = fast_window
         self.slow_window = slow_window
         self.local_data_foldpath = local_data_foldpath
 
-        self.stockdict.load_historical_data(start=self._shifted_start_date, end=self.end_date, interval=fm.constants.INTERVAL.one_day, local_data_foldpath=self.local_data_foldpath)
+        self._shifted_start_date = self.start_date - dtm.timedelta(days=slow_window + 2)
+        self.stockdict.load_historical_data(start=self._shifted_start_date, end=self.end_date, interval=fm.constants.INTERVAL.one_day, local_data_foldpath=self.local_data_foldpath, remove_error_stocks=True)
 
         self._all_timestemps = self.stockdict[0].hist_data0.index
         for stock in self.stockdict:
@@ -87,29 +91,37 @@ class EMIDataLoader(fm.StgDataLoader):
 
 
 class EMI(fm.StrategyBase):
-    def __init__(self, top_n: int, holding_period: int, stoploss: float, target: float, qty: int = 1):
+    def __init__(
+        self,
+        top_n: int,
+        holding_period: int,
+        stoploss: float,
+        target: float,
+    ):
         self.top_n = top_n
         self.holding_period = holding_period
         self.stop_loss = stoploss
         self.target = target
-        self.qty = qty
+        self.total_accounts = 5
 
     def forward(self, data: fm.constants.MarketGraphData) -> List[fm.constants.Order]:
-        scored = []
+        ### skipping if the weekday is saturday or sunday
+        if data.timestamp.weekday() in [5, 6]:
+            return []
 
+        scored = []
         # 1. Compute EMA gap for each stock
         for symbol, stock_data in data.stocks.items():
             feats = stock_data.features
-            if feats is None:
+            
+            fast = feats.get("fast_avgs")
+            slow = feats.get("slow_avgs")
+
+            delta = fast - slow
+            crossover = delta[0] < 0 and delta[1] > 0
+            if not crossover:
                 continue
-
-            fast = feats.get("fast_avg")
-            slow = feats.get("slow_avg")
-
-            if fast is None or slow is None:
-                continue
-
-            gap = fast - slow
+            gap = delta[1]
             scored.append((symbol, stock_data, gap))
 
         # 2. Sort by gap descending
@@ -119,19 +131,20 @@ class EMI(fm.StrategyBase):
         selected = [x for x in scored if x[2] > 0][: self.top_n]
 
         orders: List[fm.constants.Order] = []
-
+        value_frac = 1 / self.top_n
         # 4. Create buy orders
         for symbol, stock_data, gap in selected:
             order = fm.constants.Order(
                 symbol=symbol,
-                qty=self.qty,
+                value_frac=value_frac,
                 price=stock_data.close,
-                Datetime=data.timestamp,
+                timestamp=data.timestamp,
                 order_type=fm.constants.ORDERTYPE.buy,
                 hold_uptill=data.timestamp + dtm.timedelta(days=self.holding_period),
                 stop_loss=stock_data.close * (1 - self.stop_loss),
                 target=stock_data.close * (1 + self.target),
                 remarks=f"EMA gap={gap:.4f}",
+                account_idx=data.timestamp.weekday(),
             )
             orders.append(order)
 

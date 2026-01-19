@@ -37,8 +37,10 @@ nav:
       - Architecture: concepts/architecture.md
       - Client: concepts/client_handling_module.md
       - Stocks: concepts/stocks_handling_module.md
+      - Executioners: concepts/executioners.md
       - Strategy: concepts/strategy_handling_module.md
       - Portfolio: concepts/portfolio_handling_module.md
       - Backtesting: concepts/backtesting_handling_module.md
+
   - API Reference:
       - Overview: api/index.md

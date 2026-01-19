@@ -32,16 +32,27 @@ class ORDERTYPE(Enum):
 
 @dataclass
 class Order:
+    timestamp: datetime|np.datetime64
     symbol: str
-    qty: float
     price: float
-    Datetime: pd.Timestamp
     order_type: ORDERTYPE
+    ### most of the below attributes are for backtesting and evaluation purpose.
+    ### value_frac decides how much fraction of the total cash goes into this order
+    value_frac: float = None
+    id: Optional[str] = None
     target: Optional[float] = None
     stop_loss: Optional[float] = None
+    hold_uptill: Optional[datetime] = None
     remarks: Optional[str] = None
-    id: Optional[str] = None
-    hold_uptill: Optional[pd.Timestamp] = None
+    ### items for handling order fill related noise. These will be handlerd by executioner object. They will fill these values hence they are None initialized.
+    fill_price: float = None
+    fill_qty: float = None
+    fill_timestamp: datetime|np.datetime64 = None
+    fill_remarks: Optional[str] = None
+    brokerage_cost: float = 0
+    total_cost: float = None
+    ### the account id is for isolating the cash.
+    account_idx: int = 0
 
     def __post_init__(self):
         if self.id is None:
@@ -56,14 +67,15 @@ class StockData:
     """
     symbol: str
 
-    timestamps: np.ndarray  # np.datetime64[ns] or int64 epoch
-
-    open: np.ndarray
-    high: np.ndarray
-    low: np.ndarray
-    close: np.ndarray
-    volume: np.ndarray
+    ### market data entry
+    timestamp: datetime|np.datetime64
+    open: float
+    high: float
+    low: float
+    close: float
+    volume: float
     
+    ### anything else you want
     features: Optional[Dict[str, np.ndarray]] = None
 
 
@@ -74,12 +86,12 @@ class MarketGraphData:
     """
 
     ### the time of the data. The StockData could have historical data upto this timestamp.
-    timestamp: str|datetime|np.datetime64
+    timestamp: datetime|np.datetime64
 
     ### nodes, named after its symbol
     stocks: Dict[str, StockData]
 
-    ### edges: (src, dst) → edge feature vector. from one node to other.
+    ### edges: (src, dst) --> edge feature vector. from one node to other.
     edges: Optional[Dict[Tuple[str, str], np.ndarray]] = None
 
     ### optional global features (VIX, index returns, liquidity, etc.)
@@ -98,15 +110,6 @@ class MarketEvent:
 @dataclass(frozen=True)
 class OrderEvent:
     order: Order
-
-
-@dataclass(frozen=True)
-class FillEvent:
-    order: Order
-    fill_price: float
-    qty: float
-    timestamp: datetime
-
 
 
 @dataclass
