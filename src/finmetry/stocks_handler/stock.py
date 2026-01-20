@@ -127,6 +127,7 @@ class Stock:
         local_data_foldpath: str,
         interval: INTERVAL = INTERVAL.one_day,
         fill_holdiays: bool = False,
+        remove_weekends: bool = True,
     ) -> _pd.DataFrame:
         """Loads the data from local_directory
 
@@ -142,6 +143,8 @@ class Stock:
             time interval of data. it should be of type INTERVAL enum. Defaults to one day interval
         fill_holdiays : bool, Default is False
             The data is not available for the holidays. If this is made True then the previous day data will be filled in as that day's data and that missing holiday row will be inserted.
+        remove_weekends : bool, Default is True
+            Sometimes the markets are open on saturdays and sundays. These are vary rare and thus are removed from historical data while loading.
 
         Returns
         -------
@@ -176,6 +179,31 @@ class Stock:
             full_range = _pd.date_range(start=d1.index.min(), end=d1.index.max(), freq="B")
             d1 = d1.reindex(full_range).ffill()
             d1.index.name = "Datetime"
+        if remove_weekends:
+            d1 = d1[d1.index.weekday < 5]
         return d1
+    
+    @property
+    def scrip(self) -> _pd.DataFrame:
+        """scrip for client 5paisa.
+
+        Returns
+        -------
+        _pd.DataFrame
+            scrip data.
+        """
+        return self._scrip
+
+    @scrip.setter
+    def scrip(self, data: _pd.DataFrame) -> None:
+        """saves the scrip
+
+        Parameters
+        ----------
+        data : _pd.DataFrame
+            scrip data. This can be optained by ScripMaster.get_scrip() method.
+        """
+        self._scrip = data
+        return
 
 

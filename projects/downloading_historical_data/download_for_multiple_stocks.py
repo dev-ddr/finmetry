@@ -21,7 +21,7 @@ if __name__ == "__main__":
     parser.add_argument("--start_date", type=str, help="Start date for the data")
     parser.add_argument("--end_date", type=str, help="End date for the data")
     parser.add_argument("--interval", type=str, default="one_day", help="End date for the data")
-
+    parser.add_argument("--overwrite", type=str, default="false", help="overwrite the data or not")
 
     args = parser.parse_args()
     symbols_filepath = args.symbols_list_filepath
@@ -31,8 +31,17 @@ if __name__ == "__main__":
     end_date = args.end_date
     interval = args.interval
 
+    if args.overwrite.lower() == 'true':
+        overwrite = True
+    elif args.overwrite.lower() == 'false':
+        overwrite = False
+    else:
+        raise ValueError("overwrite argument must either be true or false")
+
     with open(symbols_filepath, 'r') as f:
         symbols = [line.strip() for line in f if line.strip()]
+    extra_symbols = ['NIFTY']
+    
     interval = fm.constants.INTERVAL[interval]
     creds = yaml.safe_load(open(creds_filepath,"r"))
     
@@ -40,11 +49,12 @@ if __name__ == "__main__":
     client = client_5paisa_login(creds=creds)
 
     ### downloading in loop
-    for sym in symbols:
+    for sym in symbols+extra_symbols:
         try:
+            print(f"downloading the data for {sym}")
             s1 = fm.Stock(sym)
             data = client.download_historical_data(s1,start=start_date, end=end_date, interval=interval)
-            s1.save_historical_data(data=data, interval=interval, local_data_foldpath=local_data_foldpath, overwrite=False)
+            s1.save_historical_data(data=data, interval=interval, local_data_foldpath=local_data_foldpath, overwrite=overwrite)
         except KeyboardInterrupt:
             raise  # DO NOT swallow Ctrl+C
         except Exception as e:

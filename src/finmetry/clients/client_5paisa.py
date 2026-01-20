@@ -9,7 +9,7 @@ import pandas as pd
 import datetime as dtm
 from typing import Union, TypedDict
 
-from ..stocks_handler import Stock
+from ..stocks_handler import Stock, StockDict
 
 from ..constants import INTERVAL
 
@@ -74,6 +74,10 @@ class ScripMaster:
         pd.DataFrame
             Scrip data of a given stock
         """
+        try:
+            return stock.scrip
+        except:
+            pass
         d1 = self.data
         f1 = (d1["Exch"] == stock.exchange) & (d1["ExchType"] == stock.exchange_type) & (d1["Symbol"] == stock.symbol)
         f2 = (d1["Series"] == "EQ") | (d1["Series"] == "XX")
@@ -81,6 +85,8 @@ class ScripMaster:
         if d2.empty:
             raise ValueError(f"No Scrip found for {stock.symbol} in scrip_master")
         d2 = d2.set_index("Name")
+        ### setting the scrip to stock object
+        stock.scrip = d2
         return d2
 
 
@@ -143,6 +149,65 @@ class Client5paisa(p5.FivePaisaClient):
         df = df.set_index("Datetime")
 
         return df
+    
+    def get_market_depth(self, stockdict: Union[list[Stock], StockDict]) -> pd.DataFrame:
+        """Gets the market depth for given list of Stocks
+
+        Parameters
+        ----------
+        StockDict : list[Stock]|StockDict
+            list of Stock class instances or StockDict type object.
+
+        Returns
+        -------
+        _pd.DataFrame
+            Live Market Depth for all the Stocks in list.
+        """
+        scrips = pd.concat(self.scrip_master.get_scrip(stock) for stock in stockdict)
+        a = scrips.rename(columns={"Exch": "Exchange", "ExchType": "ExchangeType"})[["Exchange", "ExchangeType", "Symbol"]].to_dict(orient="records")
+        d1 = pd.DataFrame(self.fetch_market_depth_by_symbol(a)["Data"])
+
+        d1.set_index("ScripCode", inplace=True)
+        d1["Datetime"] = dtm.datetime.now()
+        scrips.set_index('Scripcode', inplace=True)
+        d1["Symbol"] = scrips["Symbol"]
+        d1.set_index("Symbol", inplace=True)
+        d1.rename(columns={"Close":"PrevClose"}, inplace=True)
+        d1.rename(columns={"LastTradedPrice": "Close"}, inplace=True)
+        return d1
+        
+        
+        
+    def update_stock_histdata0_to_ltp(self, stockdict: Union[list[Stock], StockDict]) -> None:
+        """Updates the market depth to stock.hist_data0 attribute
+
+        Parameters
+        ----------
+        StockDict : list[Stock]|StockDict
+            list of Stock class instances or StockDict type object.
+
+        Returns
+        -------
+        None
+        """
+        d1 = self.get_market_depth(stockdict)
+        d1 = d1[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']]
+        d1['Datetime'] = d1['Datetime'].dt.normalize()
+        ### Convert datatypes of specific columns
+        float_cols = ['Open', 'High', 'Low', 'Close']
+        d1[float_cols] = d1[float_cols].astype(float)
+        d1['Volume'] = d1['Volume'].astype(int)
+
+        for s1 in stockdict:
+            try:
+                d = d1.loc[s1.symbol]
+                s1.hist_data0.loc[d.Datetime] = d
+            except:
+                print(f"Error in {s1.symbol}")
+                continue
+        return
+        
+        
 
 
 

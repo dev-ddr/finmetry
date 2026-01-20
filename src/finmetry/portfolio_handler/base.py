@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 
 from ..executioners import ExecutionModel
-from ..constants import Order, MarketGraphData, Position, ORDERTYPE
+from ..constants import Order, MarketGraphData, Position, ORDERTYPE, StockDataNotAvailableError, NegativeCashError, OrderTypeError
 
 
 class PorfolioSnapshot(TypedDict):
@@ -19,7 +19,7 @@ class Portfolio:
         self.executioner = executioner
         self.total_accounts = total_accounts
 
-        self.accounts: List[Account] = [Account(account_idx=i, starting_cash=starting_cash/self.total_accounts, executioner=self.executioner) for i in range(total_accounts)]
+        self.accounts: List[Account] = [Account(account_idx=i, starting_cash=starting_cash / self.total_accounts, executioner=self.executioner) for i in range(total_accounts)]
         self.history: List[PorfolioSnapshot] = []
 
     def mark_to_market(self, market_data: MarketGraphData):
@@ -41,39 +41,41 @@ class Portfolio:
         for account in self.accounts:
             exit_orders += account.get_exit_orders(market=market)
         return exit_orders
-    
+
     @property
-    def order_book(self)->pd.DataFrame:
+    def order_book(self) -> pd.DataFrame:
         d1 = pd.DataFrame()
         for account in self.accounts:
             account_ob = pd.DataFrame(account.order_book)
-            d1 = pd.concat([d1,account_ob], ignore_index=True)
-        d1['order_type'] = d1['order_type'].apply(lambda x: x.value)
+            d1 = pd.concat([d1, account_ob], ignore_index=True)
+        d1["order_type"] = d1["order_type"].apply(lambda x: x.value)
         return d1
-    
+
     @property
-    def arranged_order_book(self)->pd.DataFrame:
-        keys = ['symbol','fill_price', 'fill_qty','fill_timestamp', 'total_cost','account_idx']
+    def arranged_order_book(self) -> pd.DataFrame:
+        keys = ["symbol", "fill_price", "fill_qty", "fill_timestamp", "total_cost", "account_idx"]
         d1 = self.order_book
-        d2 = d1.groupby('order_type').get_group('buy').set_index('id')[keys].add_prefix('buy_')
-        d3 = d1.groupby('order_type').get_group('sell').set_index('id')[keys].add_prefix('sell_')
-        return pd.concat([d2,d3], axis=1)
-    
+        d2 = d1.groupby("order_type").get_group("buy").set_index("id")[keys].add_prefix("buy_")
+        d3 = d1.groupby("order_type").get_group("sell").set_index("id")[keys].add_prefix("sell_")
+        d4 = pd.concat([d2, d3], axis=1).sort_values(by="buy_fill_timestamp")
+        return d4
+
     @property
-    def account_history(self)->pd.DataFrame:
-        return pd.DataFrame(self.history).set_index('timestamp')
-    
+    def account_history(self) -> pd.DataFrame:
+        return pd.DataFrame(self.history).set_index("timestamp")
+
     @property
-    def holdings(self)->pd.DataFrame:
+    def holdings(self) -> pd.DataFrame:
         d1 = pd.DataFrame()
         for account in self.accounts:
             account_hd = pd.DataFrame(account.holdings.values())
-            d1 = pd.concat([d1,account_hd], axis=0, ignore_index=True)
+            d1 = pd.concat([d1, account_hd], axis=0, ignore_index=True)
         return d1
 
 
 class Holding(TypedDict):
     """A holding entry."""
+
     order_id: str
     account_idx: int
     symbol: str
@@ -113,7 +115,10 @@ class Account:
         holdings_value = 0.0
         for _, holding in self.holdings.items():
             symbol = holding["symbol"]
-            holding["ltp"] = market_data.stocks[symbol].close
+            try:
+                holding["ltp"] = market_data.stocks[symbol].close
+            except KeyError:
+                print(f"Cannot update the data for {symbol}, due to missing data on {market_data.timestamp}")
             holdings_value += holding["qty"] * holding["ltp"]
 
         self.account_history.append(AccountSnapshot(timestamp=market_data.timestamp, holdings_value=holdings_value, cash=self.cash))
@@ -133,12 +138,12 @@ class Account:
             qty *= -1
             total_cost *= -1
         else:
-            raise (ValueError, "order.ORDERTYPE must be from ORDERTYPE Enum class.")
+            raise OrderTypeError(order=order)
 
         ### change the cash available in the portfolio. If it is sell order then total_cost will be negative and thus that amount will be added to self.cash.
         self.cash = self.cash - total_cost
         if self.cash < 0:
-            raise ValueError("The account cash cannot go negative.")
+            raise NegativeCashError(account_idx=self.idx)
 
         ### add new holding or edit the holding
         holding = self.holdings.get(order.id, None)
@@ -173,7 +178,12 @@ class Account:
         exit_orders: List[Order] = []
 
         for order_id, holding in self.holdings.items():
-            price = market.stocks[holding["symbol"]].close
+            try:
+                price = market.stocks[holding["symbol"]].close
+                ### sometimes the data for any particular stock may be missing on a given timestamp. It will thus hault the backtest. To avoid haulting, bypass it.
+            except KeyError:
+                print(f"Cannot check for exit orders for {holding['symbol']}, due to missing data on {market.timestamp}")
+                continue
 
             reason = None
             if holding["stop_loss"] and price <= holding["stop_loss"]:

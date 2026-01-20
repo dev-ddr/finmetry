@@ -46,3 +46,9 @@ envs/*
 
 mlflow_experiments/*
 !mlflow_experiments/.gitkeep
+
+
+### projects
+projects/*
+!projects/000_strategy_ema
+!projects/downloading_historical_data
