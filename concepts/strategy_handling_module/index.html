@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../stocks_handling_module/">
+        <link rel="prev" href="../executioners/">
       
       
         <link rel="next" href="../portfolio_handling_module/">
@@ -594,6 +594,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../executioners/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executioners
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -657,6 +685,67 @@
     <span class="md-ellipsis">
       
         Strategy module
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#stgdata-strategy-related-data-computation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StgData:- Strategy related Data computation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StgData:- Strategy related Data computation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#marketgraphdata-data-holder-of-the-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MarketGraphData:- Data holder of the market
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockdata-data-holder-for-indiividual-stock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StockData:- Data holder for indiividual Stock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diedgedata-stock-stock-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiEdgeData:- Stock-Stock relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strategybase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StrategyBase
       
     </span>
   </a>
@@ -857,6 +946,67 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#stgdata-strategy-related-data-computation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StgData:- Strategy related Data computation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="StgData:- Strategy related Data computation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#marketgraphdata-data-holder-of-the-market" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MarketGraphData:- Data holder of the market
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stockdata-data-holder-for-indiividual-stock" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StockData:- Data holder for indiividual Stock
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#diedgedata-stock-stock-relations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DiEdgeData:- Stock-Stock relations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strategybase" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        StrategyBase
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -880,19 +1030,70 @@
   <h1>Strategy</h1>
 
 <h2 id="strategy-module">Strategy module</h2>
+<p>You may think that this module would be the longest or the most important one. But surprisingly, this was the most easiest of all. I simply had to make few abstract classes to define the protocol. So, let's get on to that:-</p>
 <pre class="mermaid"><code>
 flowchart LR
 
-sconfig[[StrategyConfig]]
-stg1[Strategy]
-orders@{ shape: docs, label: "Orders" }
-stginput@{ shape: lean-r, label: "TimeStamp" }
+subgraph STG["Strategy Module"]
+    stgdata[[StgData]] --&gt;
+    mgd["MarketGraphData"]
+    config[[StrategyConfig]] --&gt;
+    stg1[StrategyBase]
 
-sconfig --&gt; stg1
+    mgd --&gt; stg1
+end
+sd1[StockDict] --&gt; stgdata
+stginput@{ shape: lean-r, label: "TimeStamp" }
+orders@{ shape: docs, label: "Orders" }
+stginput --&gt; stgdata
 stg1 --&gt; orders
-orders --&gt; stginput
-stginput --&gt; stg1
 </code></pre>
+<p>The core idea is that</p>
+<blockquote>
+<p>The strategy shall take in the market-data (mostly with computed features) and output the order.</p>
+</blockquote>
+<p>So, let's first go to <em>data</em> part</p>
+<h2 id="stgdata-strategy-related-data-computation">StgData:- Strategy related Data computation</h2>
+<p>I took motivation from <a href="https://pytorch-geometric.readthedocs.io/en/latest/get_started/introduction.html">PyG</a> for structuring the data. I am assuming that the all the information required to any strategy can be represented as a <em>Graph</em>. The StgData is simply a protocol with <code>__getitem</code>, <code>__len__</code>, and <code>__iter__</code> methods. You have to implement them according to the need of your strategy.</p>
+<p>The protocol dictates that, <code>__getitem__</code> must take <code>timestamp: str|datetime</code> as an input and should output <code>MarketGraphData</code>. <strong>You should keep all your strategy feature computations inside this class.</strong></p>
+<h3 id="marketgraphdata-data-holder-of-the-market">MarketGraphData:- Data holder of the market</h3>
+<p>The market data for a given <em>timestamp</em> is structured as a <em>Graph</em>. The nodes in the <em>Graph</em> are individual <em>StockData</em> objects (coming to that in a minute), and the relation between any two stocks can be represented by a directed graph-edge. Moreover, there is also <em>global_features</em> which can hold market-level features.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MarketGraphData</span><span class="p">:</span>
+    <span class="c1">### the time of the data. The StockData could have historical data upto this timestamp.</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span><span class="o">|</span><span class="n">np</span><span class="o">.</span><span class="n">datetime64</span>
+    <span class="c1">### nodes, named after its symbol</span>
+    <span class="n">stocks</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">StockData</span><span class="p">]</span>
+    <span class="c1">### edges: (src, dst) --&gt; edge feature vector. from one node to other.</span>
+    <span class="n">edges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DiEdgeData</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">### optional global features (VIX, index returns, liquidity, etc.)</span>
+    <span class="n">global_features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<h3 id="stockdata-data-holder-for-indiividual-stock">StockData:- Data holder for indiividual Stock</h3>
+<p>The data and features for individual stocks are stored in <em>StockData</em> object. It holds the OHLCV values for a given timestamps along with the features required for the strategy.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">StockData</span><span class="p">:</span>
+    <span class="n">symbol</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="c1">### market data entry</span>
+    <span class="n">timestamp</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">|</span> <span class="n">np</span><span class="o">.</span><span class="n">datetime64</span>
+    <span class="nb">open</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">high</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">low</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">close</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">volume</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="c1">### anything else you want</span>
+    <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<h3 id="diedgedata-stock-stock-relations">DiEdgeData:- Stock-Stock relations</h3>
+<p>DiEdgeData holds the features of stock-stock relationship. Note that, this is the directed edge.</p>
+<div class="highlight"><pre><span></span><code><span class="nd">@dataclass</span><span class="p">(</span><span class="n">frozen</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">slots</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">DiEdgeData</span><span class="p">:</span>
+    <span class="n">start_node_symbol</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">end_node_symbol</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">features</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</code></pre></div>
+<h2 id="strategybase">StrategyBase</h2>
+<p>I took motivation from <a href="https://docs.pytorch.org/docs/stable/generated/torch.nn.Module.html">pytorch.nn.Module</a> and designed the protocol for <em>StrategyBase</em>. This class only have one method <code>forward</code>, which only inputs<code>MArketGraphData</code> and outputs <code>List[Orders]</code>. You can design your strategy any how, but you must follow the rule for <code>forward</code> method to make your strategy compatible with backtesting pipeline of Finemtry.</p>
 
 
 
