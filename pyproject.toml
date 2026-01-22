@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "finmetry"
-version = "2.0.2"
+version = "2.0.3"
 description = "Persnal project for stock market data analysis"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -23,7 +23,6 @@ keywords = ["finance", "stock-market", "quant", "research", "personal"]
 
 classifiers = [
   "Development Status :: 4 - Beta",
-  "Intended Audience :: Personal",
   "Programming Language :: Python :: 3.12",
   "Operating System :: OS Independent",
 ]
