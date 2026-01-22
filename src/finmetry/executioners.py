@@ -22,7 +22,7 @@ class ExecutionModel:
         order.fill_timestamp = order.timestamp
         order.brokerage_cost = total_cost - net_cost
         order.total_cost = total_cost
-        order.remarks = "No added noise"
+        order.fill_remarks = "No added noise"
 
         return order
 
@@ -33,8 +33,8 @@ class ExecutionModel:
         order.fill_price = order.price
         order.fill_timestamp = order.timestamp
         order.brokerage_cost = gross_receivable - net_receivable
-        order.total_cost = gross_receivable
-        order.remarks = "No added noise"
+        order.total_cost = net_receivable
+        order.fill_remarks = "No added noise"
 
         return order
 

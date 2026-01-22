@@ -34,9 +34,10 @@ nav:
       - Installation: getting-started/installation.md
       - Quickstart: getting-started/quickstart.md
   - Concepts:
-      - Architecture: concepts/architecture.md
+      - Introduction: concepts/introduction.md
       - Client: concepts/client_handling_module.md
       - Stocks: concepts/stocks_handling_module.md
+      - Orders: concepts/order.md
       - Executioners: concepts/executioners.md
       - Strategy: concepts/strategy_handling_module.md
       - Portfolio: concepts/portfolio_handling_module.md

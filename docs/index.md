@@ -11,6 +11,8 @@ Finmetry majorly consists of 5 modules. Each module responsible for various aspe
 
 1. [Strategy handling module](https://dev-ddr.github.io/finmetry/concepts/strategy_handling_module/) :- The strategy is formed from *StockDict* and *StrategyConfig* modules. The *StockDict* objet tell "on which stock or on which all stocks the stretegy runs". This is for initializing the strategy. For running the strategy, a timestamp is only required. For a given timestamp, the strategy computes various parameters and outputs the *orders*.
 
+1. [Executers](https://dev-ddr.github.io/finmetry/concepts/executioners/) :- These object handles the market noise and transaction costs.
+
 1. [Portfolio module](https://dev-ddr.github.io/finmetry/concepts/portfolio_handling/) :- The portfolio module is responsible for generating the report of the strategy. In live environment, this module also performs the actual actions with the client.
 
 1. [Backtester module](https://dev-ddr.github.io/finmetry/concepts/backtesting/) :- Backtests the strategy by going through the data like in an actual environment. This module loops from start-time to end-time and obtains the orders from the strategy and gives it to the portfolio. The portfolio at the end of the loop generates the report.

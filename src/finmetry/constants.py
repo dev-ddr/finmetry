@@ -105,32 +105,6 @@ class MarketGraphData:
     global_features: Optional[Dict[str, np.ndarray]] = None
 
 
-### Events
-
-
-### the marketevent can be different for different strategy based on the data. So, if the strategy uses different samples of stocks then its data will be different and so its MarketEvent will be different even for the same timestamp.
-@dataclass(frozen=True)
-class MarketEvent:
-    timestamp: str | datetime
-    data: "MarketGraphData"
-
-
-@dataclass(frozen=True)
-class OrderEvent:
-    order: Order
-
-
-@dataclass
-class Position:
-    symbol: str
-    qty: float
-    entry_price: float
-    stop_loss: float | None
-    target: float | None
-    expiry: datetime | None
-
-
-
 ### Error class
 class StockDataNotAvailableError(Exception):
     """Raised when stock data is missing for a given timestamp."""

@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 
 from ..executioners import ExecutionModel
-from ..constants import Order, MarketGraphData, Position, ORDERTYPE, StockDataNotAvailableError, NegativeCashError, OrderTypeError
+from ..constants import Order, MarketGraphData, ORDERTYPE, NegativeCashError, OrderTypeError
 
 
 class PorfolioSnapshot(TypedDict):
@@ -53,7 +53,7 @@ class Portfolio:
 
     @property
     def arranged_order_book(self) -> pd.DataFrame:
-        keys = ["symbol", "fill_price", "fill_qty", "fill_timestamp", "total_cost", "account_idx"]
+        keys = ["symbol", "fill_price", "fill_qty", "fill_timestamp", "total_cost", "account_idx", "hold_uptill", "remarks"]
         d1 = self.order_book
         d2 = d1.groupby("order_type").get_group("buy").set_index("id")[keys].add_prefix("buy_")
         d3 = d1.groupby("order_type").get_group("sell").set_index("id")[keys].add_prefix("sell_")
@@ -179,24 +179,40 @@ class Account:
 
         for order_id, holding in self.holdings.items():
             try:
-                price = market.stocks[holding["symbol"]].close
+                close = market.stocks[holding["symbol"]].close
+                low = market.stocks[holding["symbol"]].low
+                high = market.stocks[holding["symbol"]].high
                 ### sometimes the data for any particular stock may be missing on a given timestamp. It will thus hault the backtest. To avoid haulting, bypass it.
             except KeyError:
                 print(f"Cannot check for exit orders for {holding['symbol']}, due to missing data on {market.timestamp}")
                 continue
 
+            # reason = None
+            # if holding["stop_loss"] and close <= holding["stop_loss"]:
+            #     reason = "stop_loss"
+            #     # exit_price = holding["stop_loss"]
+            # elif holding["target"] and close >= holding["target"]:
+            #     reason = "target"
+            #     # exit_price = holding["target"]
+            # elif holding["holding_end_date"] and market.timestamp >= holding["holding_end_date"]:
+            #     reason = "expiry"
+            # else:
+            #     continue
+            # exit_price = close
+
             reason = None
-            if holding["stop_loss"] and price <= holding["stop_loss"]:
+            if holding["stop_loss"] and  low<= holding["stop_loss"]:
                 reason = "stop_loss"
                 exit_price = holding["stop_loss"]
-            elif holding["target"] and price >= holding["target"]:
+            elif holding["target"] and high >= holding["target"]:
                 reason = "target"
                 exit_price = holding["target"]
             elif holding["holding_end_date"] and market.timestamp >= holding["holding_end_date"]:
                 reason = "expiry"
-                exit_price = price
+                exit_price = close
             else:
                 continue
+
 
             exit_order_type = ORDERTYPE.sell if holding["qty"] > 0 else ORDERTYPE.buy
             exit_orders.append(
