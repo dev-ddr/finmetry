@@ -1,3 +1,11 @@
+## Installation
+
+You can install finmetry using
+
+```bash
+pip install finmetry
+```
+
 ## Getting Started
 
 This section walks you through a **minimal, end‑to‑end workflow** using `finmetry`.
@@ -30,106 +38,37 @@ Key rules:
 
 Below is a **complete but minimal working example** using a simple EMA crossover strategy. This example shows how any strategy can be developed.
 
-## Step 1: Prepare Market Data
+## Step 0: Prepare Market Data
 
 Download the data to local folder. Refer here for [downloading historical data](https://github.com/dev-ddr/finmetry/tree/base/projects/downloading_historical_data).
 
-Next is you need to tell the stock universe in which this strategy will work, which is an ensamble of stocks. Like, if your strategy only works on single stock then your stock universe consists of single stock.
-
-### Example: EMA Crossover Strategy
-
-We will:
-
-* compute fast/slow EMA features per stock
-* expose them via a `StgDataLoader`
-* implement a strategy that emits buy orders on crossover
-
----
-
-### Stock‑level Feature Computation
-
-All feature computation happens **outside** the strategy.
+Next is, you need to determine the stock universe in which this strategy will work, which is an ensamble of stocks. Like, if your strategy only works on single stock then your stock universe consists of single stock.
 
 ```python
-from typing import Iterator, List
-import datetime as dtm
-import pandas as pd
-import numpy as np
-import finmetry as fm
-
-LOCAL_DATA_FOLDPATH = "/path/to/historical_data"
-
-
-def get_ema_stock_data(
-    stock: fm.Stock,
-    timestamp: str | dtm.datetime,
-    fast_window: int,
-    slow_window: int,
-) -> fm.constants.StockData:
-    if stock.hist_data0 is None:
-        raise RuntimeError("Historical data not loaded")
-
-    end_time = fm.str_to_dtm(timestamp) if isinstance(timestamp, str) else timestamp
-    hist: pd.DataFrame = stock.hist_data0
-    hist = hist.loc[hist.index <= end_time]
-
-    slow_avg_prev = hist.shift(1).iloc[-slow_window:]["Close"].mean()
-    slow_avg_curr = hist.iloc[-slow_window:]["Close"].mean()
-    fast_avg_prev = hist.shift(1).iloc[-fast_window:]["Close"].mean()
-    fast_avg_curr = hist.iloc[-fast_window:]["Close"].mean()
-
-    last = hist.iloc[-1]
-
-    return fm.constants.StockData(
-        symbol=stock.symbol,
-        timestamp=end_time,
-        open=last["Open"],
-        high=last["High"],
-        low=last["Low"],
-        close=last["Close"],
-        volume=last["Volume"],
-        features={
-            "fast_avgs": np.array([fast_avg_prev, fast_avg_curr]),
-            "slow_avgs": np.array([slow_avg_prev, slow_avg_curr]),
-        },
-    )
+syms = ['ABB', 'ATUL', 'BAJFINANCE']
+sd1 = fm.StockDict()
+for sym in syms:
+    sd1.add(fm.Stock(symbol=sym))
 ```
 
-Key point:
+## EMA Crossover Strategy:- [code link](https://github.com/dev-ddr/finmetry/tree/base/projects/000_strategy_ema)
 
-> **Strategies never compute indicators. They only consume them.**
+We will implement exponential moving average strategy to understand all the concepts. There are two major components of a strategy.
 
----
+1. Feature computation --Outputs--> `MarketGraphData`
+1. `MarketGraphData` --Goes into--> Strategy --Outputs--> List of `Order`
 
-### Market‑level Snapshot Construction
+### Step 1: Feature Computation
 
-```python
-def get_ema_market_data(
-    sd: fm.StockDict,
-    timestamp: str,
-    fast_window: int,
-    slow_window: int,
-) -> fm.constants.MarketGraphData:
-    nodes = {}
-    for stock in sd:
-        nodes[stock.symbol] = get_ema_stock_data(
-            stock,
-            timestamp,
-            fast_window,
-            slow_window,
-        )
+All feature computation happens **outside** the strategy. For this, we have to implement a `fm.StgDataLoader` class and write its `__getitem__` method which will output `MarketGraphData` object.
 
-    return fm.constants.MarketGraphData(
-        timestamp=fm.str_to_dtm(timestamp),
-        stocks=nodes,
-    )
-```
+Responsibilities:
 
-This produces a **read‑only market snapshot** for a single timestamp.
+* load historical market data
+* compute all features
+* return **immutable snapshots**
+* No portfolio logic. No trading logic.
 
----
-
-### DataLoader Implementation
 
 ```python
 class EMADataLoader(fm.StgDataLoader):
@@ -153,7 +92,7 @@ class EMADataLoader(fm.StgDataLoader):
         self.timestamps = self.stockdict[0].hist_data0.index
         self.timestamps = self.timestamps[self.timestamps >= start]
 
-    def __getitem__(self, ts):
+    def __getitem__(self, ts)->fm.constants.MarketGraphData:
         return get_ema_market_data(
             self.stockdict,
             ts,
@@ -169,11 +108,13 @@ class EMADataLoader(fm.StgDataLoader):
         return len(self.timestamps)
 ```
 
-This is the **only place** where data loading and feature computation happens.
+Read more about `MarketGraphData` in [strategy concepts](https://dev-ddr.github.io/finmetry/concepts/strategy_handling_module/#marketgraphdata-data-holder-of-the-market). In above implementation the function `get_ema_market_data` computes all features and returns the `MarketGraphData` for a given timestamp. This produces a **read‑only market snapshot** for a single timestamp and this is the **only place** where data loading and feature computation happens.
 
----
+Key point:
 
-## Step 2: Strategy — Turning Features into Orders
+> **Strategies never compute indicators. They only consume them.**
+
+### Step 2: Strategy — Turning Features into Orders
 
 Now we write the strategy. Notice how **simple** it is.
 
@@ -238,34 +179,8 @@ Key observations:
 * No portfolio inspection
 * Orders express **intent only**
 
----
+Stragy should operate on `MarketGraphData`. You never pass raw OHLCV arrays directly to a strategy.
 
-## Step 3: Wire Everything Together
-
-All strategies operate on `MarketGraphData`. You never pass raw OHLCV arrays directly to a strategy.
-
-You do this by implementing a `StgDataLoader`.
-
-```python
-class MyDataLoader(StgDataLoader):
-    def __iter__(self):
-        ...
-
-    def __getitem__(self, timestamp):
-        return MarketGraphData(...)
-```
-
-Responsibilities:
-
-* load historical market data
-* compute all features
-* return **immutable snapshots**
-
-No portfolio logic. No trading logic.
-
----
-
-## Step 2: Write a Strategy
 
 A strategy is a **pure function** from market state to order intent.
 
@@ -295,8 +210,6 @@ Rules you must follow:
 
 If you break these rules, backtests become meaningless.
 
----
-
 ## Step 3: Initialize Portfolio
 
 The Portfolio tracks:
@@ -304,13 +217,8 @@ The Portfolio tracks:
 * cash
 * positions
 * open orders
-* realized / unrealized PnL
 
 You do **not** subclass Portfolio for most use cases.
-
-```python
-portfolio = Portfolio(initial_cash=1_000_000)
-```
 
 The portfolio:
 
@@ -318,29 +226,17 @@ The portfolio:
 * requests execution
 * enforces accounting constraints
 
----
 
-## Step 4: Choose an Execution Model
-
-Execution models define **how orders are filled**.
-
-The default model is deterministic and instant:
+The portfolio initialization requires:-
+- starting_cash -  keeping it to 100 for ease of calculations
+- total_accounts - numbers of isolated accounts. Cash is devided equally amongst all accounts at first.
+- [executioner](https://dev-ddr.github.io/finmetry/concepts/executioners/) - for added market noise. However, here it is not doing anyting.
 
 ```python
-execution = ExecutionModel(brokerage_perc=0.001)
+ortfolio = fm.Portfolio(starting_cash=100, total_accounts=stg1.total_accounts, executioner=fm.executioners.ExecutionModel())
 ```
 
-You can later replace this with:
-
-* slippage models
-* volume‑limited models
-* live broker adapters
-
-Strategy and Portfolio code remain unchanged.
-
----
-
-## Step 5: Run the Backtester
+## Step 4: Backtesting
 
 The Backtester wires everything together.
 
@@ -364,8 +260,6 @@ What happens internally at each timestamp:
 6. portfolio is marked to market
 
 You never manually call these steps.
-
----
 
 ## Inspecting Results
 
@@ -394,38 +288,13 @@ Everything else stays the same:
 * Portfolio logic
 * Order semantics
 
-This is intentional.
 
----
-
-## Common Beginner Mistakes
+## Common Mistakes
 
 Avoid these:
 
 * sizing positions inside strategies
-* mutating `MarketGraphData`
 * reading portfolio state in strategies
-* adding slippage in Portfolio
-* reordering backtest steps
-
-If you feel tempted to do any of the above, revisit the Concepts pages.
 
 ---
-
-## What to Read Next
-
-* Strategy Concepts (again, carefully)
-* Portfolio Concepts
-* Executioner Concepts
-
-Then start experimenting.
-
 ---
-
-## Final Note
-
-`finmetry` is **research‑first**.
-
-If something feels restrictive, that restriction is probably intentional.
-
-Correctness beats convenience.

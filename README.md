@@ -4,22 +4,6 @@
 
 Visit [Finmetry](https://dev-ddr.github.io/finmetry/) guide for further steps.
 
-# Overview
-
-Finmetry majorly consists of 5 modules. Each module responsible for various aspects of the fin-quant pipeline.
-
-1. [Client handling module](https://dev-ddr.github.io/finmetry/concepts/client_handling_module/) :- Handles APIs of different clients. These clients are often the stock brokers like 5paisa, zerodha, dhan etc. This module bridges the client-API and the finmetry API. The major responsibility of this module is to download the stocks data, which can be historical or live.
-
-1. [Stocks handling module](https://dev-ddr.github.io/finmetry/concepts/stocks_handling_module/) :- Responsible for handling the stocks level data. The *client handling module* works with the Stocks object. The Stocks object carries necessary information about the underlying security. This information is used by other modules for their tasks. This module also contains *StockDict* object which is kind of a data container to handle multiple stocks. All other modules in this project works with *StockDict* object. For eg., the *client handling module* gets the underlying stocks information from *StockDict* objext which it uses further to download the live/historical data about each stock. 
-
-1. [Strategy handling module](https://dev-ddr.github.io/finmetry/concepts/strategy_handling_module/) :- The strategy is formed from *StockDict* and *StrategyConfig* modules. The *StockDict* objet tell "on which stock or on which all stocks the stretegy runs". This is for initializing the strategy. For running the strategy, a timestamp is only required. For a given timestamp, the strategy computes various parameters and outputs the *orders*.
-
-1. [Portfolio module](https://dev-ddr.github.io/finmetry/concepts/portfolio_handling/) :- The portfolio module is responsible for generating the report of the strategy. In live environment, this module also performs the actual actions with the client.
-
-1. [Backtester module](https://dev-ddr.github.io/finmetry/concepts/backtesting/) :- Backtests the strategy by going through the data like in an actual environment. This module loops from start-time to end-time and obtains the orders from the strategy and gives it to the portfolio. The portfolio at the end of the loop generates the report.
-
-Below figure shows the framework overview uptill getting the orders from the strategy.
-
 ```mermaid
 
 flowchart TB
@@ -45,15 +29,16 @@ s1 --> sd1@{ shape: procs, label: "StockDict"}
 
 subgraph STRATEGY["Strategy"]
     %% direction LR
-    sconfig[[StrategyConfig]]
+    sdata[StgDataLoader] -->
+    mgdata[MarketGraphData] -->
     stg1[Strategy]
 end
 
 orders@{ shape: docs, label: "Orders" }
 stginput@{ shape: lean-r, label: "TimeStamp" }
 stg1 --> orders
-sd1 --> stg1
-stginput --> stg1
+sd1 --> sdata
+stginput --> sdata
 
 %% sd1 --data for stock *i* from <br>*t1* to *t2* timestamp--> dh
 %% dh --OHLCV dataframe--> sd1
@@ -62,6 +47,116 @@ stginput --> stg1
 
 
 > This project is solely developed for my personal use. I am publishing this only to keep myself updated and to remove the headache of setting up the framework again and again.
+
+---
+
+**Finmetry is a research-first quantitative trading framework** designed to keep
+strategy logic, execution logic, and accounting logic strictly separated.
+
+It exists to eliminate repeated reinvention of trading pipelines, so you can
+focus on **researching strategies**, not rebuilding infrastructure.
+
+
+## What Finmetry Is (and Is Not)
+
+Finmetry is:
+
+- a framework for systematic trading research
+- equally suited for backtesting and live trading
+- opinionated by design
+- built around explicit, auditable abstractions
+
+Finmetry is **not**:
+
+- a strategy library
+- a signal generator
+- a black-box trading system
+
+If you want flexibility at the cost of correctness, this framework will feel restrictive.
+That restriction is intentional.
+
+
+## The Core Trading Loop
+
+Every strategy in finmetry follows the same explicit loop:
+
+```text
+Market Data → Strategy → Orders → Portfolio → Execution → Accounting
+````
+
+Each stage is implemented as a **separate module** with strict responsibilities.
+
+This guarantees that:
+
+* strategies remain stateless
+* execution assumptions are explicit
+* accounting is consistent
+* backtests can be trusted
+* live trading reuses the same abstractions
+
+
+## High-Level Architecture
+
+```mermaid
+flowchart LR
+    Data[Market Data]
+    Strategy[Strategy]
+    Orders[Orders]
+    Portfolio[Portfolio]
+    Execution[Execution Model]
+    Accounting[State & PnL]
+
+    Data --> Strategy
+    Strategy --> Orders
+    Orders --> Portfolio
+    Portfolio --> Execution
+    Execution --> Portfolio
+    Portfolio --> Accounting
+```
+
+## Major Modules
+
+Finmetry is organized into the following conceptual modules:
+
+### [Client Handling](https://dev-ddr.github.io/finmetry/concepts/client_handling_module/)
+
+Handles interaction with external systems such as broker APIs and live data feeds.
+Keeps the rest of the framework broker-agnostic.
+
+### [Stocks](https://dev-ddr.github.io/finmetry/concepts/stocks_handling_module/)
+
+Manages symbols, historical data, and OHLCV storage.
+Acts as the foundation for all market data access.
+
+### [Strategy](https://dev-ddr.github.io/finmetry/concepts/strategy_handling_module/)
+
+Consumes immutable market snapshots and emits **order intent only**.
+Strategies never manage cash, positions, or execution details.
+
+### [Orders](https://dev-ddr.github.io/finmetry/concepts/order/)
+
+Orders are the contract between strategy, portfolio, and execution.
+They represent intent, not outcome.
+
+### [Executioners](https://dev-ddr.github.io/finmetry/concepts/executioners/)
+
+Simulate (or connect to) market reality:
+slippage, brokerage, partial fills, or live execution.
+
+### [Portfolio](https://dev-ddr.github.io/finmetry/concepts/portfolio_handling_module/)
+
+The single source of truth for positions, cash, and PnL.
+All state mutation happens here.
+
+### [Backtesting](https://dev-ddr.github.io/finmetry/concepts/backtesting_handling_module/)
+
+Pure orchestration.
+Iterates over time and wires everything together without adding logic.
+
+## Final Note
+
+> I have built this for my personal use in mind.
+
 
 
 
