@@ -4,48 +4,6 @@
 
 Visit [Finmetry](https://dev-ddr.github.io/finmetry/) guide for further steps.
 
-```mermaid
-
-flowchart TB
-
-subgraph DATA["Data handling"]
-    %% direction  LR
-    s1[Stock]
-    
-    subgraph Download["Downloading data"]
-    dp[Client API]
-    dh[finmetry<br>Client]
-    end
-
-    subgraph LOCAL["Local data"]
-    db[(database <br> local storage)]
-    end
-    s1 --request--> dh --request--> dp --data--> dh --data-->s1
-    s1 --write-->db --read--> s1
-
-end
-
-s1 --> sd1@{ shape: procs, label: "StockDict"}
-
-subgraph STRATEGY["Strategy"]
-    %% direction LR
-    sdata[StgDataLoader] -->
-    mgdata[MarketGraphData] -->
-    stg1[Strategy]
-end
-
-orders@{ shape: docs, label: "Orders" }
-stginput@{ shape: lean-r, label: "TimeStamp" }
-stg1 --> orders
-sd1 --> sdata
-stginput --> sdata
-
-%% sd1 --data for stock *i* from <br>*t1* to *t2* timestamp--> dh
-%% dh --OHLCV dataframe--> sd1
-
-```
-
-
 > This project is solely developed for my personal use. I am publishing this only to keep myself updated and to remove the headache of setting up the framework again and again.
 
 ---
@@ -93,26 +51,6 @@ This guarantees that:
 * accounting is consistent
 * backtests can be trusted
 * live trading reuses the same abstractions
-
-
-## High-Level Architecture
-
-```mermaid
-flowchart LR
-    Data[Market Data]
-    Strategy[Strategy]
-    Orders[Orders]
-    Portfolio[Portfolio]
-    Execution[Execution Model]
-    Accounting[State & PnL]
-
-    Data --> Strategy
-    Strategy --> Orders
-    Orders --> Portfolio
-    Portfolio --> Execution
-    Execution --> Portfolio
-    Portfolio --> Accounting
-```
 
 ## Major Modules
 
