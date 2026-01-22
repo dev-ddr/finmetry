@@ -597,6 +597,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../executioners/" class="md-nav__link">
         
   
@@ -659,6 +687,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -701,6 +731,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -709,10 +741,65 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#portfolio-handler" class="md-nav__link">
+  <a href="#highlevel-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Portfolio handler
+        High‑level Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#portfolio-account-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portfolio → Account Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-flow-buy-hold-exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order Flow (Buy → Hold → Exit)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiaccount-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi‑Account Isolation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marktomarket-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mark‑to‑Market Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Guarantees
       
     </span>
   </a>
@@ -867,6 +954,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -875,10 +964,65 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#portfolio-handler" class="md-nav__link">
+  <a href="#highlevel-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Portfolio handler
+        High‑level Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#portfolio-account-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Portfolio → Account Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#order-flow-buy-hold-exit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Order Flow (Buy → Hold → Exit)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiaccount-isolation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi‑Account Isolation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#marktomarket-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mark‑to‑Market Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#design-guarantees" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Design Guarantees
       
     </span>
   </a>
@@ -905,17 +1049,124 @@
   
 
 
-  <h1>Portfolio</h1>
+<h1 id="portfolio-handler">Portfolio handler</h1>
+<p>This section explains how the <strong>Portfolio</strong>, <strong>Account</strong>, and <strong>ExecutionModel</strong> interact during a backtest. I have only impemented the <em>Portfolio</em> class with backtest in mind. I have not yet thought on how will this be used in live.</p>
+<p><em>Portfolio</em> consists of multiple <em>Acoounts</em>. These accounts are predetermined by strategy. It is the responsibility of the Strategy to tell the number of accounts and also the account index for each order. The job of <em>Portfolio</em> class is then to maintain the registry of past orders, current holdings, valuations etc. Also, the exit conditions (which is specified in the Order) are also checked by <em>Portfolio</em> class on each market data.</p>
+<h2 id="highlevel-architecture">High‑level Architecture</h2>
+<pre class="mermaid"><code>flowchart LR
+    Market[MarketGraphData]
+    Portfolio
+    Account1[Account 0]
+    Account2[Account 1]
+    Executioner[ExecutionModel]
 
-<h2 id="portfolio-handler">Portfolio handler</h2>
-<pre class="mermaid"><code>
-flowchart LR
+    Market --&gt;|price updates| Portfolio
+    Portfolio --&gt;|mark_to_market| Account1
+    Portfolio --&gt;|mark_to_market| Account2
 
-orders@{ shape: docs, label: "Orders" } --&gt; 
-iflv@{ shape: diamond, label: "is live market" } --yes--&gt; od[Place order &lt;br&gt; through clients] --&gt;
-ph1[PortfolioHandler]
-iflv --"no"--&gt; ph1
-</code></pre>
+    Portfolio --&gt;|on_order| Account1
+    Portfolio --&gt;|on_order| Account2
+
+    Account1 --&gt;|fill_order| Executioner
+    Account2 --&gt;|fill_order| Executioner</code></pre>
+<p><strong>Key idea</strong>:
+Portfolio is only a <strong>coordinator</strong>. All cash, holdings, and PnL logic live inside individual Accounts.</p>
+<h2 id="portfolio-account-lifecycle">Portfolio → Account Lifecycle</h2>
+<p><pre class="mermaid"><code>sequenceDiagram
+participant M as Market
+participant P as Portfolio
+participant A as Account
+participant E as ExecutionModel
+
+
+M-&gt;&gt;P: MarketGraphData(timestamp, prices)
+
+
+%% Mark-to-market flow
+P-&gt;&gt;A: mark_to_market(market_data)
+A-&gt;&gt;A: update ltp for holdings
+A-&gt;&gt;P: AccountSnapshot(cash, holdings_value)
+
+
+%% Exit check flow
+P-&gt;&gt;A: on_market(market_data)
+A-&gt;&gt;A: check stop_loss / target / expiry
+A--&gt;&gt;P: exit_orders[]
+
+
+%% Order execution flow
+P-&gt;&gt;A: on_order(order)
+A-&gt;&gt;E: fill_order(available_cash, order)
+E--&gt;&gt;A: filled order
+A-&gt;&gt;A: update cash
+A-&gt;&gt;A: update holdings</code></pre>
+Notes:</p>
+<ul>
+<li>
+<p>on_market is a pure decision step: no cash or holdings mutation</p>
+</li>
+<li>
+<p>Exit orders reuse the original order_id, enforcing strict position pairing</p>
+</li>
+<li>
+<p>Actual state changes happen only in on_order</p>
+</li>
+</ul>
+<h2 id="order-flow-buy-hold-exit">Order Flow (Buy → Hold → Exit)</h2>
+<pre class="mermaid"><code>stateDiagram-v2
+    [*] --&gt; BuyOrder
+    BuyOrder --&gt; Holding: order filled
+
+    Holding --&gt; StopLossExit: price &lt;= stop_loss
+    Holding --&gt; TargetExit: price &gt;= target
+    Holding --&gt; ExpiryExit: holding_end_date reached
+
+    StopLossExit --&gt; [*]
+    TargetExit --&gt; [*]
+    ExpiryExit --&gt; [*]</code></pre>
+<p>Each holding is <strong>keyed by order_id</strong>, enforcing:</p>
+<ul>
+<li>No partial exits on the same order</li>
+<li>Clean buy → sell pairing</li>
+</ul>
+<h2 id="multiaccount-isolation">Multi‑Account Isolation</h2>
+<pre class="mermaid"><code>flowchart TB
+    Portfolio
+
+    subgraph Account_0
+        Cash0[Cash]
+        Holdings0[Holdings]
+        Orders0[Order Book]
+    end
+
+    subgraph Account_1
+        Cash1[Cash]
+        Holdings1[Holdings]
+        Orders1[Order Book]
+    end
+
+    Portfolio --&gt; Account_0
+    Portfolio --&gt; Account_1</code></pre>
+<p><strong>Invariant</strong>:
+Accounts never share cash, holdings, or orders. Portfolio aggregates <strong>value only</strong>, nothing else.</p>
+<h2 id="marktomarket-logic">Mark‑to‑Market Logic</h2>
+<pre class="mermaid"><code>flowchart LR
+    MarketData --&gt;|close price| Holding
+    Holding --&gt;|qty × ltp| HoldingsValue
+    HoldingsValue --&gt; AccountSnapshot
+    AccountSnapshot --&gt; PortfolioSnapshot</code></pre>
+<p>Portfolio value at time <em>t</em>:</p>
+<div class="highlight"><pre><span></span><code>Σ (account.cash + account.holdings_value)
+</code></pre></div>
+<h2 id="design-guarantees">Design Guarantees</h2>
+<ul>
+<li><strong>Deterministic accounting</strong>: cash is updated immediately on fill</li>
+<li><strong>Strict position pairing</strong>: buy &amp; sell share the same <code>order_id</code></li>
+<li><strong>Account‑level isolation</strong>: enables parallel strategies</li>
+<li><strong>Portfolio‑level aggregation</strong>: clean performance reporting</li>
+</ul>
+<p>This structure intentionally avoids hidden state and cross‑account leakage.</p>
+<hr />
 
 
 

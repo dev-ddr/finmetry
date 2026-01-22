@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../stocks_handling_module/">
+        <link rel="prev" href="../order/">
       
       
         <link rel="next" href="../strategy_handling_module/">
@@ -66,6 +66,11 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
+      
+        
+        <a href="#execution-boundary" class="md-skip">
+          Skip to content
+        </a>
       
     </div>
     <div data-md-component="announce">
@@ -589,6 +594,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../order/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -598,6 +631,24 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Executioners
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -615,6 +666,150 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#execution-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive-execution-model-current-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naive Execution Model (Current Implementation)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buy-vs-sell-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy vs Sell Semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Buy vs Sell Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buy-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sell-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sell Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#determinism-guarantee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Determinism Guarantee
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separation-from-portfolio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Separation from Portfolio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensibility-live-trading-advanced-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extensibility: Live Trading &amp; Advanced Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typical-market-noises-not-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical Market Noises (not implemented)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -817,6 +1012,141 @@
   
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#execution-boundary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Execution Boundary
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#naive-execution-model-current-implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Naive Execution Model (Current Implementation)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buy-vs-sell-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy vs Sell Semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Buy vs Sell Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buy-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sell-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sell Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#determinism-guarantee" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Determinism Guarantee
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#separation-from-portfolio" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Separation from Portfolio
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#extensibility-live-trading-advanced-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extensibility: Live Trading &amp; Advanced Models
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#typical-market-noises-not-implemented" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Typical Market Noises (not implemented)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -837,7 +1167,110 @@
 
   <h1>Executioners</h1>
 
-
+<h2 id="execution-boundary">Execution Boundary</h2>
+<pre class="mermaid"><code>flowchart LR
+    ORD[Order Intent] --&gt; EXE[ExecutionModel]
+    EXE --&gt; FILL[Filled Order]</code></pre>
+<p>Before execution:</p>
+<ul>
+<li><code>price</code> is intent</li>
+<li><code>value_frac</code> expresses capital allocation</li>
+</ul>
+<p>After execution:</p>
+<ul>
+<li><code>fill_price</code>, <code>fill_qty</code>, <code>total_cost</code>, <code>brokerage_cost</code> are finalized</li>
+</ul>
+<h2 id="naive-execution-model-current-implementation">Naive Execution Model (Current Implementation)</h2>
+<p>The current <code>ExecutionModel</code> implements a <strong>deterministic, immediate fill</strong> model:</p>
+<ul>
+<li>buy orders consume a fraction of available cash</li>
+<li>sell orders liquidate the full quantity</li>
+<li>fills occur at <code>order.price</code></li>
+<li>no slippage, no latency, no volume constraints</li>
+</ul>
+<p>This is intentional and serves as a <strong>baseline</strong>.</p>
+<h2 id="buy-vs-sell-semantics">Buy vs Sell Semantics</h2>
+<h3 id="buy-orders">Buy Orders</h3>
+<div class="highlight"><pre><span></span><code>available_cash × value_frac
+        ↓
+   total_cost (incl. brokerage)
+        ↓
+   net_cost / fill_price
+        ↓
+      fill_qty
+</code></pre></div>
+<ul>
+<li>Cash constraint is enforced here</li>
+<li>Quantity is derived, not specified</li>
+</ul>
+<h3 id="sell-orders">Sell Orders</h3>
+<ul>
+<li>Quantity is already known</li>
+<li>Execution determines net receivable after brokerage</li>
+</ul>
+<h2 id="determinism-guarantee">Determinism Guarantee</h2>
+<p>Given the same:</p>
+<ul>
+<li>order</li>
+<li>available cash</li>
+<li>execution model parameters</li>
+</ul>
+<p>Execution is <strong>fully deterministic</strong>.</p>
+<p>This is critical for:</p>
+<ul>
+<li>reproducible backtests</li>
+<li>debugging strategy behavior</li>
+<li>regression testing</li>
+</ul>
+<h2 id="separation-from-portfolio">Separation from Portfolio</h2>
+<p>The Executioner:</p>
+<ul>
+<li>DOES fill orders</li>
+<li>DOES compute costs</li>
+<li>DOES model market noise</li>
+</ul>
+<p>The Portfolio:</p>
+<ul>
+<li>DOES NOT simulate markets</li>
+<li>DOES NOT apply slippage</li>
+<li>DOES NOT guess fill quantities</li>
+</ul>
+<p>This separation avoids hidden coupling and keeps accounting clean.</p>
+<h2 id="extensibility-live-trading-advanced-models">Extensibility: Live Trading &amp; Advanced Models</h2>
+<p>The <code>ExecutionModel</code> is designed to be <strong>subclassed</strong>:</p>
+<ul>
+<li>live broker APIs</li>
+<li>limit/market order books</li>
+<li>volume‑weighted execution</li>
+<li>latency and queue priority models</li>
+</ul>
+<p>The Backtester and Portfolio remain unchanged.</p>
+<blockquote>
+<p>Swapping execution models does not affect strategy or portfolio code.</p>
+</blockquote>
+<h2 id="typical-market-noises-not-implemented">Typical Market Noises (not implemented)</h2>
+<p>Typical execution‑level failures:</p>
+<ul>
+<li>insufficient liquidity</li>
+<li>rejected orders</li>
+<li>partial fills</li>
+<li>delayed execution</li>
+</ul>
+<p>These belong <strong>only</strong> in the Executioner layer and must be surfaced via filled order metadata.</p>
+<h2 id="mental-model">Mental Model</h2>
+<p>Think of the Executioner as a <strong>market adapter</strong>:</p>
+<ul>
+<li>Strategy says <em>what it wants</em></li>
+<li>Executioner decides <em>what actually happens</em></li>
+</ul>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Executioner simulates market reality</li>
+<li>Only source of execution noise</li>
+<li>Deterministic by default</li>
+<li>Fully swappable for live trading</li>
+</ul>
+<p>This module is the bridge between research and reality.</p>
 
 
 

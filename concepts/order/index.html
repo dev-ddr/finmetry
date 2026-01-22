@@ -11,10 +11,10 @@
       
       
       
-        <link rel="prev" href="../client_handling_module/">
+        <link rel="prev" href="../stocks_handling_module/">
       
       
-        <link rel="next" href="../order/">
+        <link rel="next" href="../executioners/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>Stocks - finmetry</title>
+        <title>Orders - finmetry</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#stocks-module" class="md-skip">
+        <a href="#order-core-contract-object-concepts" class="md-skip">
           Skip to content
         </a>
       
@@ -102,7 +102,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Stocks
+              Orders
             
           </span>
         </div>
@@ -566,6 +566,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../stocks_handling_module/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stocks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -583,7 +611,7 @@
   <span class="md-ellipsis">
     
   
-    Stocks
+    Orders
   
 
     
@@ -601,7 +629,7 @@
   <span class="md-ellipsis">
     
   
-    Stocks
+    Orders
   
 
     
@@ -625,10 +653,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#stocks-module" class="md-nav__link">
+  <a href="#order-core-contract-object-concepts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stocks module
+        Order – Core Contract Object (Concepts)
       
     </span>
   </a>
@@ -636,10 +664,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#saving-the-data" class="md-nav__link">
+  <a href="#what-an-order-represents" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Saving the data
+        What an Order Represents
       
     </span>
   </a>
@@ -647,10 +675,143 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-the-data-from-local-storage" class="md-nav__link">
+  <a href="#field-categories-very-important" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading the data from local storage
+        Field Categories (Very Important)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Categories (Very Important)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-intent-fields-strategyowned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Intent Fields (Strategy‑Owned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-identity-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Identity &amp; Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-executionfilled-fields-executionerowned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Execution‑Filled Fields (Executioner‑Owned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-object-deserves-its-own-concept-doc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Object Deserves Its Own Concept Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buy-vs-sell-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy vs Sell Semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Buy vs Sell Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buy-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sell-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sell Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiaccount-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi‑Account Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-an-order-must-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What an Order Must NOT Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -661,34 +822,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../order/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Orders
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -925,10 +1058,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#stocks-module" class="md-nav__link">
+  <a href="#order-core-contract-object-concepts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stocks module
+        Order – Core Contract Object (Concepts)
       
     </span>
   </a>
@@ -936,10 +1069,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#saving-the-data" class="md-nav__link">
+  <a href="#what-an-order-represents" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Saving the data
+        What an Order Represents
       
     </span>
   </a>
@@ -947,10 +1080,143 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#loading-the-data-from-local-storage" class="md-nav__link">
+  <a href="#field-categories-very-important" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Loading the data from local storage
+        Field Categories (Very Important)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Field Categories (Very Important)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-intent-fields-strategyowned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Intent Fields (Strategy‑Owned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-identity-tracking" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Identity &amp; Tracking
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-executionfilled-fields-executionerowned" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Execution‑Filled Fields (Executioner‑Owned)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#why-this-object-deserves-its-own-concept-doc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why This Object Deserves Its Own Concept Doc
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#buy-vs-sell-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy vs Sell Semantics
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Buy vs Sell Semantics">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#buy-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Buy Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sell-orders" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Sell Orders
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#multiaccount-support" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi‑Account Support
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-an-order-must-not-do" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What an Order Must NOT Do
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mental-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mental Model
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary
       
     </span>
   </a>
@@ -977,49 +1243,119 @@
   
 
 
-<h2 id="stocks-module">Stocks module</h2>
-<p>The <em>Stock</em> object is the core class handling the data read/write. Multiple <strong>Stocks</strong> object can be combined into one <strong>StockDict</strong> object which is kind of a dataholder.</p>
-<pre class="mermaid"><code>
-flowchart LR
+  <h1>Orders</h1>
 
-st1[Stock]
-dhm[(Local &lt;br&gt; database)]
-
-st1 --data for stock from &lt;br&gt;*t1* to *t2* timestamp--&gt; dhm
-dhm --OHLCV dataframe--&gt; st1
-
-Symbol([Symbol]) &amp; e(["`Exchange&lt;br&gt;(NSE)`"]) &amp; et(["`Exchange&lt;br&gt;type&lt;br&gt;(Cash)`"]) --&gt; st1
-
-st1 --&gt; sd1@{ shape: procs, label: "StockDict"}</code></pre>
-<p>The <strong>Stock</strong> object takes in the input of <code>Exchange</code> and <code>Exchange_type</code>, which tells the type of the security. The <em>Stock</em> object handles the reading and writing of the data to the local database. The <em>Stock</em> class uses <em>duckdb</em> for managing database with <code>.parquet</code> files. This enables quicker read/write.</p>
-<h1 id="saving-the-data">Saving the data</h1>
+<h2 id="order-core-contract-object-concepts">Order – Core Contract Object (Concepts)</h2>
+<p><code>Order</code> is the <strong>central contract object</strong> of the entire pipeline. Every major component either <strong>produces</strong>, <strong>consumes</strong>, or <strong>mutates</strong> an <code>Order</code>.</p>
+<p>If <code>MarketGraphData</code> represents <em>what the market is</em>, an <code>Order</code> represents <em>what the system wants to do about it</em>.</p>
 <blockquote>
-<p>The <code>local_data_foldpath</code> should be the path to the parent folder. The <em>Stock</em> object takes care of making a subdirectory within this foldpath.</p>
+<p>The Order is the only object that flows end‑to‑end through Strategy → Portfolio → Execution.</p>
 </blockquote>
-<p><div class="highlight"><pre><span></span><code><span class="n">s1</span><span class="o">.</span><span class="n">save_historical_data</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">local_data_foldpath</span><span class="o">=</span><span class="n">local_data_foldpath</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<h2 id="what-an-order-represents">What an Order Represents</h2>
+<p>An <code>Order</code> is <strong>not</strong> a trade and <strong>not</strong> a fill.</p>
+<p>It is a <strong>time‑stamped instruction with intent</strong>, progressively enriched as it moves through the system.</p>
+<p>Lifecycle view:</p>
+<div class="highlight"><pre><span></span><code>Strategy        Portfolio        Executioner
+  |                |                  |
+  |  intent only   |  state-aware     |  reality-aware
+  |---------------&gt;|-----------------&gt;|-----------------&gt;
+        Order            Order              Order
 </code></pre></div>
-The data is saved as month wise files.</p>
-<h1 id="loading-the-data-from-local-storage">Loading the data from local storage</h1>
-<p>You don't need to log-in the client to read from local data. In a way, this enables us to download the data independently of the strategies. The strategy only needs to interact with the local data.</p>
-<div class="highlight"><pre><span></span><code><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2026-01-14&quot;</span>
-<span class="n">interval</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">constants</span><span class="o">.</span><span class="n">INTERVAL</span><span class="o">.</span><span class="n">one_day</span>
-
-<span class="n">data</span> <span class="o">=</span> <span class="n">s1</span><span class="o">.</span><span class="n">load_historical_data</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end_date</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span> <span class="n">local_data_foldpath</span><span class="o">=</span><span class="n">local_data_foldpath</span><span class="p">)</span>
-<span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
-</code></pre></div>
-<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
-DatetimeIndex: 258 entries, 2025-01-01 to 2026-01-13
-Data columns (total 5 columns):
- #   Column  Non-Null Count  Dtype  
----  ------  --------------  -----  
- 0   Open    258 non-null    float64
- 1   High    258 non-null    float64
- 2   Low     258 non-null    float64
- 3   Close   258 non-null    float64
- 4   Volume  258 non-null    int64  
-dtypes: float64(4), int64(1)
-memory usage: 12.1 KB
-</code></pre>
+<p>The same object instance evolves — no translation layers, no duplication.</p>
+<h2 id="field-categories-very-important">Field Categories (Very Important)</h2>
+<p>The <code>Order</code> fields are intentionally grouped by <strong>ownership</strong>.</p>
+<h3 id="1-intent-fields-strategyowned">1. Intent Fields (Strategy‑Owned)</h3>
+<p>These fields <strong>must be set by the Strategy</strong> and must never be modified by Execution.</p>
+<ul>
+<li><code>timestamp</code> - origin time of intent</li>
+<li><code>symbol</code> - stock symbol</li>
+<li><code>price</code> - the price at which order is intended</li>
+<li><code>order_type</code> - type of order: finmetry.ORDERTYPE (Enum)....right now only <code>buy</code> and <code>sell</code></li>
+<li><code>value_frac</code> - the fraction of capital to be utilized for this order. This is gross meaning including brokerage.</li>
+<li><code>target</code> - the target price, if hit then exit</li>
+<li><code>stop_loss</code> - the stop loss price, if hit then exit</li>
+<li><code>hold_uptill</code> - the deadline upto which to hold the stock. its a timestamp</li>
+<li><code>remarks</code> - any text remarks</li>
+<li><code>account_idx</code> - this is to tell portfolio, in which account this order shall be placed. Strategy pre-determines the total number of accounts in portfolio.</li>
+</ul>
+<p>These describe <em>what the strategy wants</em>, not what happens.</p>
+<h3 id="2-identity-tracking">2. Identity &amp; Tracking</h3>
+<ul>
+<li><code>id</code></li>
+</ul>
+<p>Every order is uniquely identifiable across:</p>
+<ul>
+<li>backtests</li>
+<li>logs</li>
+<li>execution traces</li>
+<li>live trading</li>
+</ul>
+<p>Order IDs are generated at creation time and <strong>never change</strong>. The exit orders are mapped with the same id by portfolio to match the entry and exit order.</p>
+<h3 id="3-executionfilled-fields-executionerowned">3. Execution‑Filled Fields (Executioner‑Owned)</h3>
+<p>These fields <strong>must only be written by the ExecutionModel</strong>.</p>
+<ul>
+<li><code>fill_price</code></li>
+<li><code>fill_qty</code></li>
+<li><code>fill_timestamp</code></li>
+<li><code>brokerage_cost</code></li>
+<li><code>total_cost</code></li>
+<li><code>fill_remarks</code></li>
+</ul>
+<p>Before execution, these fields are <code>None</code> (or zero where applicable).</p>
+<p>After execution, they define <strong>what actually happened</strong>.</p>
+<h2 id="why-this-object-deserves-its-own-concept-doc">Why This Object Deserves Its Own Concept Doc</h2>
+<p>Because <code>Order</code> is:</p>
+<ul>
+<li>the <strong>Strategy → Portfolio boundary</strong></li>
+<li>the <strong>Portfolio → Execution boundary</strong></li>
+<li>the <strong>single source of truth</strong> for trades</li>
+<li>the object used for <strong>PnL attribution, analytics, and debugging</strong></li>
+</ul>
+<p>Any ambiguity here contaminates the entire system.</p>
+<h2 id="buy-vs-sell-semantics">Buy vs Sell Semantics</h2>
+<h3 id="buy-orders">Buy Orders</h3>
+<ul>
+<li><code>value_frac</code> defines capital allocation</li>
+<li>quantity is <em>derived</em> during execution</li>
+<li>cash constraint is enforced by Execution</li>
+</ul>
+<h3 id="sell-orders">Sell Orders</h3>
+<ul>
+<li>quantity is implied from existing position</li>
+<li>execution determines net receivable</li>
+</ul>
+<p>Strategies never compute fill quantities.</p>
+<h2 id="multiaccount-support">Multi‑Account Support</h2>
+<p><code>account_idx</code> allows:</p>
+<ul>
+<li>multiple isolated capital pools</li>
+<li>parallel strategies</li>
+<li>realistic fund‑style simulations</li>
+</ul>
+<p>The order always knows <strong>which cash bucket it belongs to</strong>.</p>
+<h2 id="what-an-order-must-not-do">What an Order Must NOT Do</h2>
+<p>An <code>Order</code>:</p>
+<ul>
+<li>MUST NOT contain portfolio state</li>
+<li>MUST NOT simulate execution</li>
+<li>MUST NOT modify market data</li>
+</ul>
+<p>It is a message — not a decision engine.</p>
+<h2 id="mental-model">Mental Model</h2>
+<p>Think of <code>Order</code> as a <strong>typed message envelope</strong>:</p>
+<ul>
+<li>Strategy writes the front of the envelope</li>
+<li>Execution stamps the back</li>
+<li>Portfolio files it permanently</li>
+</ul>
+<p>Everything else revolves around it.</p>
+<h2 id="summary">Summary</h2>
+<ul>
+<li>Order is the system’s core contract</li>
+<li>It separates intent from reality</li>
+<li>It evolves, but is never replaced</li>
+</ul>
+<p>Without a well‑defined Order, the architecture collapses.</p>
 
 
 
