@@ -80,7 +80,7 @@ Every strategy in finmetry follows the same explicit loop:
 
 ```text
 Market Data → Strategy → Orders → Portfolio → Execution → Accounting
-````
+```
 
 Each stage is implemented as a **separate module** with strict responsibilities.
 
