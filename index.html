@@ -394,6 +394,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#high-level-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Level Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#major-modules" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1012,6 +1023,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#high-level-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        High-Level Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#major-modules" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1203,23 +1225,18 @@ That restriction is intentional.</p>
 <h2 id="the-core-trading-loop">The Core Trading Loop</h2>
 <p>Every strategy in finmetry follows the same explicit loop:</p>
 <div class="highlight"><pre><span></span><code>Market Data → Strategy → Orders → Portfolio → Execution → Accounting
-````
-
-Each stage is implemented as a **separate module** with strict responsibilities.
-
-This guarantees that:
-
-* strategies remain stateless
-* execution assumptions are explicit
-* accounting is consistent
-* backtests can be trusted
-* live trading reuses the same abstractions
-
-
-## High-Level Architecture
-
-```mermaid
-flowchart LR
+</code></pre></div>
+<p>Each stage is implemented as a <strong>separate module</strong> with strict responsibilities.</p>
+<p>This guarantees that:</p>
+<ul>
+<li>strategies remain stateless</li>
+<li>execution assumptions are explicit</li>
+<li>accounting is consistent</li>
+<li>backtests can be trusted</li>
+<li>live trading reuses the same abstractions</li>
+</ul>
+<h2 id="high-level-architecture">High-Level Architecture</h2>
+<pre class="mermaid"><code>flowchart LR
     Data[Market Data]
     Strategy[Strategy]
     Orders[Orders]
@@ -1232,8 +1249,7 @@ flowchart LR
     Orders --&gt; Portfolio
     Portfolio --&gt; Execution
     Execution --&gt; Portfolio
-    Portfolio --&gt; Accounting
-</code></pre></div>
+    Portfolio --&gt; Accounting</code></pre>
 <h2 id="major-modules">Major Modules</h2>
 <p>Finmetry is organized into the following conceptual modules:</p>
 <h3 id="client-handling"><a href="https://dev-ddr.github.io/finmetry/concepts/client_handling_module/">Client Handling</a></h3>
