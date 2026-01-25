@@ -13,7 +13,6 @@ from ..stocks_handler import Stock, StockDict
 
 from ..constants import INTERVAL
 
-    
 
 class ScripMaster:
     """ScripMaster contains all the scipts of 5paisa client.
@@ -90,7 +89,6 @@ class ScripMaster:
         return d2
 
 
-
 class Client5paisaCred(TypedDict):
     APP_NAME: str
     APP_SOURCE: str
@@ -99,17 +97,17 @@ class Client5paisaCred(TypedDict):
     USER_KEY: str
     ENCRYPTION_KEY: str
 
+
 class Client5paisa(p5.FivePaisaClient):
-    
-    def __init__(self, totp:str, mpin:str, client_code:str, cred: Client5paisaCred, scrip_master:ScripMaster=None, **kwargs):
+    def __init__(self, totp: str, mpin: str, client_code: str, cred: Client5paisaCred, scrip_master: ScripMaster = None, **kwargs):
         super().__init__(cred=cred)
-        self.get_totp_session(client_code,f'{totp}',mpin)
+        self.get_totp_session(client_code, f"{totp}", mpin)
 
-        print('downloading the scrip-master')
+        print("downloading the scrip-master")
 
-        self.scrip_master=ScripMaster() if scrip_master is None else scrip_master
+        self.scrip_master = ScripMaster() if scrip_master is None else scrip_master
         return
-    
+
     def download_historical_data(
         self,
         stock: Stock,
@@ -129,27 +127,65 @@ class Client5paisa(p5.FivePaisaClient):
             start date of the data. The data for this date will be downloaded, by default "2023-01-01"
         end : Union[str, dtm.datetime], optional
             end date of the data. The data for this date will be downloaded, by default "2023-03-30"
-        
+
         Returns
         ----------
         pd.DataFrame
             A dataframe containing a historical data.
-        
+
         """
+        # scrip = self.scrip_master.get_scrip(stock)
+
+        # if isinstance(start, dtm.datetime):
+        #     start = start.strftime("%Y-%m-%d")
+        # if isinstance(end, dtm.datetime):
+        #     end = end.strftime("%Y-%m-%d")
+
+        # df = self.historical_data(stock.exchange, stock.exchange_type, scrip.loc[stock.symbol, "Scripcode"], interval.value, start, end)
+        # df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
+        # df["Datetime"] = pd.to_datetime(df["Datetime"])
+        # df = df.set_index("Datetime")
+
+        # return df
+
         scrip = self.scrip_master.get_scrip(stock)
+        if isinstance(start, str):
+            start_dt = dtm.datetime.strptime(start, "%Y-%m-%d")
+        else:
+            start_dt = start
 
-        if isinstance(start, dtm.datetime):
-            start = start.strftime("%Y-%m-%d")
-        if isinstance(end, dtm.datetime):
-            end = end.strftime("%Y-%m-%d")
+        if isinstance(end, str):
+            end_dt = dtm.datetime.strptime(end, "%Y-%m-%d")
+        else:
+            end_dt = end
 
-        df = self.historical_data(stock.exchange, stock.exchange_type, scrip.loc[stock.symbol, "Scripcode"], interval.value, start, end)
-        df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
-        df["Datetime"] = pd.to_datetime(df["Datetime"])
-        df = df.set_index("Datetime")
+        def _fetch_chunk(s: dtm.datetime, e: dtm.datetime) -> pd.DataFrame:
+            df = self.historical_data(stock.exchange, stock.exchange_type, scrip.loc[stock.symbol, "Scripcode"], interval.value, s.strftime("%Y-%m-%d"), e.strftime("%Y-%m-%d"))
+            if df is None or df.empty:
+                return pd.DataFrame()
+            df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
+            df["Datetime"] = pd.to_datetime(df["Datetime"])
+            return df.set_index("Datetime")
+
+        dfs = []
+        curr_start = start_dt
+
+        while curr_start < end_dt:
+            curr_end = min(curr_start + dtm.timedelta(days=90), end_dt)
+            chunk = _fetch_chunk(curr_start, curr_end)
+            if not chunk.empty:
+                dfs.append(chunk)
+
+            curr_start = curr_end
+
+        if not dfs:
+            return pd.DataFrame()
+
+        df = pd.concat(dfs).sort_index()
+        df = df.loc[~df.index.duplicated(keep="first")]
 
         return df
-    
+
     def get_market_depth(self, stockdict: Union[list[Stock], StockDict]) -> pd.DataFrame:
         """Gets the market depth for given list of Stocks
 
@@ -169,15 +205,13 @@ class Client5paisa(p5.FivePaisaClient):
 
         d1.set_index("ScripCode", inplace=True)
         d1["Datetime"] = dtm.datetime.now()
-        scrips.set_index('Scripcode', inplace=True)
+        scrips.set_index("Scripcode", inplace=True)
         d1["Symbol"] = scrips["Symbol"]
         d1.set_index("Symbol", inplace=True)
-        d1.rename(columns={"Close":"PrevClose"}, inplace=True)
+        d1.rename(columns={"Close": "PrevClose"}, inplace=True)
         d1.rename(columns={"LastTradedPrice": "Close"}, inplace=True)
         return d1
-        
-        
-        
+
     def update_stock_histdata0_to_ltp(self, stockdict: Union[list[Stock], StockDict]) -> None:
         """Updates the market depth to stock.hist_data0 attribute
 
@@ -191,12 +225,12 @@ class Client5paisa(p5.FivePaisaClient):
         None
         """
         d1 = self.get_market_depth(stockdict)
-        d1 = d1[['Datetime', 'Open', 'High', 'Low', 'Close', 'Volume']]
-        d1['Datetime'] = d1['Datetime'].dt.normalize()
+        d1 = d1[["Datetime", "Open", "High", "Low", "Close", "Volume"]]
+        d1["Datetime"] = d1["Datetime"].dt.normalize()
         ### Convert datatypes of specific columns
-        float_cols = ['Open', 'High', 'Low', 'Close']
+        float_cols = ["Open", "High", "Low", "Close"]
         d1[float_cols] = d1[float_cols].astype(float)
-        d1['Volume'] = d1['Volume'].astype(int)
+        d1["Volume"] = d1["Volume"].astype(int)
 
         for s1 in stockdict:
             try:
@@ -206,8 +240,3 @@ class Client5paisa(p5.FivePaisaClient):
                 print(f"Error in {s1.symbol}")
                 continue
         return
-        
-        
-
-
-
