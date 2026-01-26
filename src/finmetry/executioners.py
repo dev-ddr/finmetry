@@ -12,6 +12,10 @@ class ExecutionModel:
         self.brokerage = 0.0
 
     def fill_buy_order(self, order: Order, available_cash: float) -> Order:
+        # print(f"for buy order of {order.symbol} on date {order.timestamp} with order type {order.order_type.value}")
+        # print(f"value_frac = {order.value_frac}")
+        # print(f"available cash = {available_cash}")
+
         total_cost = available_cash * order.value_frac
         ### the total cost includes brokerage cost. Thus the amount available to buy is obtained after deducting brokerage from the total cost.
         ### the formula is total_cost = net_cost * (1 + self.brokerage), thus

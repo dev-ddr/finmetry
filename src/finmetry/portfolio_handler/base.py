@@ -4,7 +4,7 @@ from datetime import datetime
 import numpy as np
 
 from ..executioners import ExecutionModel
-from ..constants import Order, MarketGraphData, ORDERTYPE, NegativeCashError, OrderTypeError
+from ..constants import Order, MarketGraphData, ORDERTYPE, NegativeCashError, OrderTypeError, ZeroQtyError
 
 
 class PorfolioSnapshot(TypedDict):
@@ -130,6 +130,9 @@ class Account:
         qty = order.fill_qty
         price = order.fill_price
         total_cost = order.total_cost
+
+        if qty == 0.0:
+            raise ZeroQtyError(account_idx=self.idx)
 
         if order.order_type == ORDERTYPE.buy:
             qty *= 1

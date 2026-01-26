@@ -112,6 +112,11 @@ class StockDataNotAvailableError(Exception):
         message = f"Stock data not available. No data for {symbol} on {timestamp}."
         super().__init__(message)
     
+class ZeroQtyError(Exception):
+    """Raised when the quantity of order is zero."""
+    def __init__(self, account_idx:int=None):
+        message=f"The qty of an order cannot be zero. This could be because of zero available cash. Registered for - {account_idx}"
+        super().__init__(message)
 
 class NegativeCashError(Exception):
     """Raised when the cash of an account goes negative."""
