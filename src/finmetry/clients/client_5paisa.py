@@ -5,9 +5,11 @@ This module contains the objects related to 5paisa client
 """
 
 import py5paisa as p5
+import json
 import pandas as pd
 import datetime as dtm
 from typing import Union, TypedDict
+from websocket import create_connection
 
 from ..stocks_handler import Stock, StockDict
 
@@ -106,7 +108,13 @@ class Client5paisa(p5.FivePaisaClient):
         print("downloading the scrip-master")
 
         self.scrip_master = ScripMaster() if scrip_master is None else scrip_master
+
+        # self.ws_feed = create_connection(self._web_url1)
         return
+
+    @property
+    def _web_url1(self):
+        return f"wss://openfeed.5paisa.com/Feeds/api/chat?Value1={self.Jwt_token}|{self.client_code}"
 
     def download_historical_data(
         self,
@@ -134,19 +142,6 @@ class Client5paisa(p5.FivePaisaClient):
             A dataframe containing a historical data.
 
         """
-        # scrip = self.scrip_master.get_scrip(stock)
-
-        # if isinstance(start, dtm.datetime):
-        #     start = start.strftime("%Y-%m-%d")
-        # if isinstance(end, dtm.datetime):
-        #     end = end.strftime("%Y-%m-%d")
-
-        # df = self.historical_data(stock.exchange, stock.exchange_type, scrip.loc[stock.symbol, "Scripcode"], interval.value, start, end)
-        # df.columns = ["Datetime", "Open", "High", "Low", "Close", "Volume"]
-        # df["Datetime"] = pd.to_datetime(df["Datetime"])
-        # df = df.set_index("Datetime")
-
-        # return df
 
         scrip = self.scrip_master.get_scrip(stock)
         if isinstance(start, str):
@@ -167,22 +162,23 @@ class Client5paisa(p5.FivePaisaClient):
             df["Datetime"] = pd.to_datetime(df["Datetime"])
             return df.set_index("Datetime")
 
-        dfs = []
-        curr_start = start_dt
-
-        while curr_start < end_dt:
-            curr_end = min(curr_start + dtm.timedelta(days=90), end_dt)
-            chunk = _fetch_chunk(curr_start, curr_end)
-            if not chunk.empty:
-                dfs.append(chunk)
-
-            curr_start = curr_end
-
-        if not dfs:
-            return pd.DataFrame()
-
-        df = pd.concat(dfs).sort_index()
-        df = df.loc[~df.index.duplicated(keep="first")]
+        ### directly downloading whole data if interval is 1day
+        if interval == INTERVAL.one_day:
+            df = _fetch_chunk(start_dt, end_dt)
+        ### else in chunks
+        else:
+            dfs = []
+            curr_start = start_dt
+            while curr_start < end_dt:
+                curr_end = min(curr_start + dtm.timedelta(days=90), end_dt)
+                chunk = _fetch_chunk(curr_start, curr_end)
+                if not chunk.empty:
+                    dfs.append(chunk)
+                curr_start = curr_end
+            if not dfs:
+                return pd.DataFrame()
+            df = pd.concat(dfs).sort_index()
+            df = df.loc[~df.index.duplicated(keep="first")]
 
         return df
 
@@ -211,6 +207,63 @@ class Client5paisa(p5.FivePaisaClient):
         d1.rename(columns={"Close": "PrevClose"}, inplace=True)
         d1.rename(columns={"LastTradedPrice": "Close"}, inplace=True)
         return d1
+
+    def get_market_feed(self, stockdict: Union[list[Stock], StockDict]) -> pd.DataFrame:
+        """Gets the market feed for given list of Stocks
+
+        Parameters
+        ----------
+        stocklist : list[Stock]|StockList
+            list of Stock class instances or StockList type object.
+
+        Returns
+        -------
+        _pd.DataFrame
+            Live Market Feed for all the Stocks in list.
+        """
+        a = pd.concat(self.scrip_master.get_scrip(stock) for stock in stockdict)
+        a = a.rename(columns={"Scripcode": "ScripCode"})
+        a = a[["Exch", "ExchType", "ScripCode"]].to_dict(orient="records")
+        step = 50
+        d1 = [pd.DataFrame(self.fetch_market_feed_scrip(a[i : i + step])["Data"]) for i in range(0, len(a), step)]
+        d1 = pd.concat(d1)
+        d1["Datetime"] = dtm.datetime.now()
+
+        return d1
+
+    def get_market_data(self, stockdict: Union[list[Stock], StockDict], feed_type: str = "md") -> pd.DataFrame:
+        """Fetches the market data.
+
+        The data fetched contains bid and offer qty and prices, depending upon the type of data requested.
+
+        Parameters
+        ----------
+        stocklist : list[Stock]|StockList
+            list of Stocks or StockList type object
+        feed_type : str, optional
+            'md' or 'mf'. 'md' gives 5 depth but not LTP. 'mf' gives only single depth and LTP., by default 'md'
+
+        Returns
+        -------
+        _pd.DataFrame
+            Data
+        """
+        a = pd.concat(self.scrip_master.get_scrip(stock) for stock in stockdict)
+        a = a.rename(columns={"Scripcode": "ScripCode"})[["Exch", "ExchType", "ScripCode"]].to_dict(orient="records")
+        mf_list = self.Request_Feed(feed_type, "s", a)
+
+        self.ws_feed = create_connection(self._web_url1)
+        self.ws_feed.send(json.dumps(mf_list))
+        d1 = ""
+        if feed_type == "md":
+            for s in mf_list["MarketFeedData"]:
+                d1 = d1 + ",{" + self.ws_feed.recv()[1:-1] + "}"
+        if feed_type == "mf":
+            for s in mf_list["MarketFeedData"]:
+                d1 = d1 + "," + self.ws_feed.recv()[1:-1]
+        self.ws_feed.close()
+        d1 = "[" + d1[1:] + "]"
+        return pd.DataFrame(json.loads(d1))
 
     def update_stock_histdata0_to_ltp(self, stockdict: Union[list[Stock], StockDict]) -> None:
         """Updates the market depth to stock.hist_data0 attribute
